@@ -1,12 +1,12 @@
-#set(LLVM_TARGET_DEFINITIONS Sparc.td)
+set(LLVM_TARGET_DEFINITIONS TOY.td)
 
-#tablegen(LLVM SparcGenRegisterInfo.inc -gen-register-info)
+tablegen(LLVM TOYGenRegisterInfo.inc -gen-register-info)
 #tablegen(LLVM SparcGenInstrInfo.inc -gen-instr-info)
 #tablegen(LLVM SparcGenAsmWriter.inc -gen-asm-writer)
 #tablegen(LLVM SparcGenDAGISel.inc -gen-dag-isel)
 #tablegen(LLVM SparcGenSubtargetInfo.inc -gen-subtarget)
 #tablegen(LLVM SparcGenCallingConv.inc -gen-callingconv)
-#add_public_tablegen_target(SparcCommonTableGen)
+add_public_tablegen_target(TOYCommonTableGen)
 
 add_llvm_target(TOYCodeGen
 #  DelaySlotFiller.cpp
