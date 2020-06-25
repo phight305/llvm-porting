@@ -180,6 +180,7 @@ Triple::ArchType Triple::getArchTypeForLLVMName(StringRef Name) {
     .Case("amdil", amdil)
     .Case("spir", spir)
     .Case("spir64", spir64)
+    .Case("toy", toy)
     .Default(UnknownArch);
 }
 
@@ -242,6 +243,7 @@ static Triple::ArchType parseArch(StringRef ArchName) {
     .Case("amdil", Triple::amdil)
     .Case("spir", Triple::spir)
     .Case("spir64", Triple::spir64)
+    .Case("toy", Triple::toy)
     .Default(Triple::UnknownArch);
 }
 
