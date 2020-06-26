@@ -1,7 +1,7 @@
 set(LLVM_TARGET_DEFINITIONS TOY.td)
 
 tablegen(LLVM TOYGenRegisterInfo.inc -gen-register-info)
-#tablegen(LLVM SparcGenInstrInfo.inc -gen-instr-info)
+tablegen(LLVM TOYGenInstrInfo.inc -gen-instr-info)
 #tablegen(LLVM SparcGenAsmWriter.inc -gen-asm-writer)
 #tablegen(LLVM SparcGenDAGISel.inc -gen-dag-isel)
 #tablegen(LLVM SparcGenSubtargetInfo.inc -gen-subtarget)
