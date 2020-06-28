@@ -19,7 +19,7 @@
 //#include "TOYFrameLowering.h"
 #include "TOYSubtarget.h"
 #include "llvm/Target/TargetMachine.h"
-//#include "llvm/DataLayout.h"
+#include "llvm/DataLayout.h"
 //#include "llvm/Target/TargetFrameLowering.h"
 //#include "llvm/Target/TargetTransformImpl.h"
 
@@ -27,7 +27,7 @@ namespace llvm {
 
 class TOYTargetMachine : public LLVMTargetMachine {
   TOYSubtarget Subtarget;
-  //const DataLayout DL;       // Calculates type size & alignment
+  const DataLayout DL;       // Calculates type size & alignment
   //TOYInstrInfo InstrInfo;
   //TOYTargetLowering TLInfo;
   //TOYFrameLowering FrameLowering;
@@ -45,7 +45,7 @@ public:
   }
   virtual const TOYSubtarget *getSubtargetImpl() const {
     llvm_unreachable("getSubtargetImpl not implemented yet\n");
-    //return &Subtarget;
+    return &Subtarget;
   }
   //virtual const TOYRegisterInfo *getRegisterInfo() const {
   //  llvm_unreachable("getRegisterInfo not implemented yet\n");
@@ -56,8 +56,7 @@ public:
     //return &TLInfo;
   //}
   virtual const DataLayout *getDataLayout() const {
-      llvm_unreachable("getDataLayout not implemented yet\n");
-      //return &DL;
+      return &DL;
   }
 
   // Pass Pipeline Configuration
