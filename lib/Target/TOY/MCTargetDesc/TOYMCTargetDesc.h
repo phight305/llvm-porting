@@ -32,7 +32,7 @@ extern Target TheTOYTarget;
 //#define GET_INSTRINFO_ENUM
 //#include "TOYGenInstrInfo.inc"
 
-//#define GET_SUBTARGETINFO_ENUM
-//#include "TOYGenSubtargetInfo.inc"
+#define GET_SUBTARGETINFO_ENUM
+#include "TOYGenSubtargetInfo.inc"
 
 #endif
