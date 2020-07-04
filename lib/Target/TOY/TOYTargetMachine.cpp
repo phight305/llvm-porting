@@ -32,38 +32,37 @@ TOYTargetMachine::TOYTargetMachine(const Target &T, StringRef TT, StringRef
       //InstrInfo(Subtarget),
       //TLInfo(*this), FrameLowering(Subtarget)
 
-//namespace {
+namespace {
 /// TOY Code Generator Pass Configuration Options.
-//class TOYPassConfig : public TargetPassConfig {
-//public:
-//  TOYPassConfig(TOYTargetMachine *TM, PassManagerBase &PM)
-//    : TargetPassConfig(TM, PM) {}
+class TOYPassConfig : public TargetPassConfig {
+public:
+  TOYPassConfig(TOYTargetMachine *TM, PassManagerBase &PM)
+    : TargetPassConfig(TM, PM) {}
 
-//  TOYTargetMachine &getTOYTargetMachine() const {
-//      return getTM<TOYTargetMachine>();
-//  }
+  TOYTargetMachine &getTOYTargetMachine() const {
+      return getTM<TOYTargetMachine>();
+  }
 
-//  virtual bool addInstSelector();
-//  virtual bool addPreEmitPass();
-//};
-//} // namespace
+  virtual bool addInstSelector();
+  virtual bool addPreEmitPass();
+};
+} // namespace
 
 TargetPassConfig *TOYTargetMachine::createPassConfig(PassManagerBase &PM) {
-    llvm_unreachable("createPassConfig has not been implemented yet\n");
-    //return new TOYPassConfig(this, PM);
+    return new TOYPassConfig(this, PM);
 }
 
 
-//bool TOYPassConfig::addInstSelector() {
-//    llvm_unreachable("addInstSelector has not been implemented yet\n");
+bool TOYPassConfig::addInstSelector() {
+    llvm_unreachable("addInstSelector has not been implemented yet\n");
     //addPass(createTOYISelDag(getTOYTargetMachine()));
     //return false;
-//}
+}
 
 /// addPreEmitPass - This pass may be implemented by targets that want to run
 /// passes immediately before machine code is emitted.  This should return
 /// true if -print-machineinstrs should print out the code after the passes.
-//bool TOYPassConfig::addPreEmitPass(){
-//    llvm_unreachable("addPreEmitPass has not been implemented yet\n");
+bool TOYPassConfig::addPreEmitPass(){
+    llvm_unreachable("addPreEmitPass has not been implemented yet\n");
     //return true;
-//}
+}
