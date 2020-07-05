@@ -21,16 +21,16 @@ extern Target TheTOYTarget;
 
 } // End llvm namespace
 
-// Defines symbolic names for Sparc registers.  This defines a mapping from
+// Defines symbolic names for TOY registers.  This defines a mapping from
 // register name to register number.
 //
-//#define GET_REGINFO_ENUM
-//#include "TOYGenRegisterInfo.inc"
+// #define GET_REGINFO_ENUM
+// #include "TOYGenRegisterInfo.inc"
 
-// Defines symbolic names for the Sparc instructions.
+// Defines symbolic names for the TOY instructions.
 //
-//#define GET_INSTRINFO_ENUM
-//#include "TOYGenInstrInfo.inc"
+// #define GET_INSTRINFO_ENUM
+// #include "TOYGenInstrInfo.inc"
 
 #define GET_SUBTARGETINFO_ENUM
 #include "TOYGenSubtargetInfo.inc"
