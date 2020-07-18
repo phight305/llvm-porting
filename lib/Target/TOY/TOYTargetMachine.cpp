@@ -28,7 +28,8 @@ TOYTargetMachine::TOYTargetMachine(const Target &T, StringRef TT, StringRef
                                    CodeGenOpt::Level OL)
     : LLVMTargetMachine(T, TT, CPU, FS, Options, RM, CM, OL),
       Subtarget(TT, CPU, FS),
-      DL(Subtarget.getDataLayout()) {}
+      DL(Subtarget.getDataLayout()),
+      TLInfo(*this) {}
       // InstrInfo(Subtarget),
       // TLInfo(*this), FrameLowering(Subtarget)
 

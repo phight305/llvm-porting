@@ -15,7 +15,7 @@
 #define TOYTARGETMACHINE_H
 
 // #include "TOYInstrInfo.h"
-// #include "TOYISelLowering.h"
+#include "TOYISelLowering.h"
 // #include "TOYFrameLowering.h"
 #include "TOYSubtarget.h"
 #include "llvm/Target/TargetMachine.h"
@@ -29,7 +29,7 @@ class TOYTargetMachine : public LLVMTargetMachine {
   TOYSubtarget Subtarget;
   const DataLayout DL;       // Calculates type size & alignment
   // TOYInstrInfo InstrInfo;
-  // TOYTargetLowering TLInfo;
+  TOYTargetLowering TLInfo;
   // TOYFrameLowering FrameLowering;
 public:
   TOYTargetMachine(const Target &T, StringRef TT,
@@ -51,10 +51,9 @@ public:
     // llvm_unreachable("getRegisterInfo not implemented yet\n");
     // return &InstrInfo.getRegisterInfo();
   // }
-  // virtual const TOYTargetLowering* getTargetLowering() const {
-    // llvm_unreachable("getTargetLowering not implemented yet\n");
-    // return &TLInfo;
-  // }
+  virtual const TOYTargetLowering* getTargetLowering() const {
+      return &TLInfo;
+  }
   virtual const DataLayout *getDataLayout() const {
       return &DL;
   }
