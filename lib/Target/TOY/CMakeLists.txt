@@ -11,7 +11,7 @@ add_public_tablegen_target(TOYCommonTableGen)
 add_llvm_target(TOYCodeGen
 #  DelaySlotFiller.cpp
 #  FPMover.cpp
-#  TOYAsmPrinter.cpp
+   TOYAsmPrinter.cpp
 #  TOYInstrInfo.cpp
    TOYISelDAGToDAG.cpp
    TOYISelLowering.cpp
@@ -21,6 +21,7 @@ add_llvm_target(TOYCodeGen
    TOYSubtarget.cpp
    TOYTargetMachine.cpp
 #  TOYSelectionDAGInfo.cpp
+   TOYMCInstLower.cpp
 )
 
 #add_dependencies(LLVMTOYCodeGen intrinsics_gen)
