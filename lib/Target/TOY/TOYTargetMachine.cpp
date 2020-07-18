@@ -55,15 +55,13 @@ TargetPassConfig *TOYTargetMachine::createPassConfig(PassManagerBase &PM) {
 
 
 bool TOYPassConfig::addInstSelector() {
-    llvm_unreachable("addInstSelector has not been implemented yet\n");
-    // addPass(createTOYISelDag(getTOYTargetMachine()));
-    // return false;
+    addPass(createTOYISelDag(getTOYTargetMachine()));
+    return false;
 }
 
 /// addPreEmitPass - This pass may be implemented by targets that want to run
 /// passes immediately before machine code is emitted.  This should return
 /// true if -print-machineinstrs should print out the code after the passes.
 bool TOYPassConfig::addPreEmitPass(){
-    llvm_unreachable("addPreEmitPass has not been implemented yet\n");
-    // return true;
+    return true;
 }

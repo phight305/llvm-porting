@@ -6,6 +6,6 @@ namespace llvm {
 class TargetMachine;
 class TOYTargetMachine;
 
-// FunctionPass *createTOYISelDag(TOYTargetMachine &TM);
+FunctionPass *createTOYISelDag(TOYTargetMachine &TM);
 } // end namespace llvm;
 #endif
