@@ -14,7 +14,7 @@
 #ifndef TOYTARGETMACHINE_H
 #define TOYTARGETMACHINE_H
 
-// #include "TOYInstrInfo.h"
+#include "TOYInstrInfo.h"
 #include "TOYISelLowering.h"
 // #include "TOYFrameLowering.h"
 #include "TOYSubtarget.h"
@@ -28,7 +28,7 @@ namespace llvm {
 class TOYTargetMachine : public LLVMTargetMachine {
   TOYSubtarget Subtarget;
   const DataLayout DL;       // Calculates type size & alignment
-  // TOYInstrInfo InstrInfo;
+  TOYInstrInfo InstrInfo;
   TOYTargetLowering TLInfo;
   // TOYFrameLowering FrameLowering;
 public:
@@ -36,10 +36,9 @@ public:
                    StringRef CPU, StringRef FS, const TargetOptions &Options,
                    Reloc::Model RM, CodeModel::Model CM,
                    CodeGenOpt::Level OL);
-  // virtual const TOYInstrInfo *getInstrInfo() const {
-    // llvm_unreachable("getInstrInfo not implemented yet\n");
-    // return InstrInfo;
-  // }
+  virtual const TOYInstrInfo *getInstrInfo() const {
+    return &InstrInfo;
+  }
   // virtual const TargetFrameLowering  *getFrameLowering() const {
     // llvm_unreachable("getFrameLowering not implemented yet\n");
     // return &FrameLowering;
@@ -47,10 +46,9 @@ public:
   virtual const TOYSubtarget *getSubtargetImpl() const {
     return &Subtarget;
   }
-  // virtual const TOYRegisterInfo *getRegisterInfo() const {
-    // llvm_unreachable("getRegisterInfo not implemented yet\n");
-    // return &InstrInfo.getRegisterInfo();
-  // }
+  virtual const TOYRegisterInfo *getRegisterInfo() const {
+    return &InstrInfo.getRegisterInfo();
+  }
   virtual const TOYTargetLowering* getTargetLowering() const {
       return &TLInfo;
   }

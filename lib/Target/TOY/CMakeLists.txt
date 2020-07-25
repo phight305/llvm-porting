@@ -5,7 +5,7 @@ tablegen(LLVM TOYGenInstrInfo.inc -gen-instr-info)
 #tablegen(LLVM TOYGenAsmWriter.inc -gen-asm-writer)
 tablegen(LLVM TOYGenDAGISel.inc -gen-dag-isel)
 tablegen(LLVM TOYGenSubtargetInfo.inc -gen-subtarget)
-#tablegen(LLVM TOYGenCallingConv.inc -gen-callingconv)
+tablegen(LLVM TOYGenCallingConv.inc -gen-callingconv)
 add_public_tablegen_target(TOYCommonTableGen)
 
 add_llvm_target(TOYCodeGen

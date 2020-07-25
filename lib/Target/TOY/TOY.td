@@ -25,7 +25,7 @@ def FeatureIsV1
 //===----------------------------------------------------------------------===//
 include "TOYRegisterInfo.td"
 include "TOYInstrInfo.td"
-// include "TOYCallingConv.td"
+include "TOYCallingConv.td"
 
 class Proc<string Name, list<SubtargetFeature> Features>
  : Processor<Name, NoItineraries, Features>;
