@@ -12,7 +12,7 @@ add_llvm_target(TOYCodeGen
 #  DelaySlotFiller.cpp
 #  FPMover.cpp
    TOYAsmPrinter.cpp
-#  TOYInstrInfo.cpp
+   TOYInstrInfo.cpp
    TOYISelDAGToDAG.cpp
    TOYISelLowering.cpp
 #  TOYFrameLowering.cpp
