@@ -34,15 +34,17 @@ TOYRegisterInfo::TOYRegisterInfo(TOYSubtarget &st,
 }
 
 const uint16_t* TOYRegisterInfo::getCalleeSavedRegs(const MachineFunction *MF) const {
-  llvm_unreachable("getCalleeSavedRegs not implemented yet");
-  // static const uint16_t CalleeSavedRegs[] = { 0 };
-  // return CalleeSavedRegs;
+  // llvm_unreachable("getCalleeSavedRegs not implemented yet");
+  static const uint16_t CalleeSavedRegs[] = { 0 };
+  return CalleeSavedRegs;
 }
 
 BitVector TOYRegisterInfo::getReservedRegs(const MachineFunction &MF) const {
-  llvm_unreachable("getReservedRegs not implemented yet");
-  // BitVector Reserved(getNumRegs());
-  // return Reserved;
+  // llvm_unreachable("getReservedRegs not implemented yet");
+  BitVector Reserved(getNumRegs());
+  Reserved.set(TOY::SP);
+  Reserved.set(TOY::LR);
+  return Reserved;
 }
 
 void TOYRegisterInfo::
