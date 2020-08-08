@@ -43,7 +43,30 @@ TOYTargetLowering::LowerReturn(SDValue Chain,
                                const SmallVectorImpl<ISD::OutputArg> &Outs,
                                const SmallVectorImpl<SDValue> &OutVals,
                                DebugLoc dl, SelectionDAG &DAG) const {
-  llvm_unreachable("LowerReturn has not benn implemented yet");
+  MachineFunction &MF = DAG.getMachineFunction();
+  SmallVector<CCValAssign, 16> RVLocs;
+  CCState CCInfo(CallConv, isVarArg, MF, getTargetMachine(),
+                 RVLocs, *DAG.getContext());
+  CCInfo.AnalyzeReturn(Outs, RetCC_TOY);
+  SDValue Flag;
+
+  if (MF.getRegInfo().liveout_empty()) {
+    for (unsigned i = 0; i != RVLocs.size(); ++i)
+      if (RVLocs[i].isRegLoc())
+        MF.getRegInfo().addLiveOut(RVLocs[i].getLocReg());
+  }
+  // Copy the result values into the output registers.
+  for (unsigned i = 0; i != RVLocs.size(); ++i) {
+    CCValAssign &VA = RVLocs[i];
+    assert(VA.isRegLoc() && "Can only return in registers!");
+
+    Chain = DAG.getCopyToReg(Chain, dl, VA.getLocReg(),
+                             OutVals[i], Flag);
+
+    // Guarantee that all emitted copies are stuck together with flags.
+    Flag = Chain.getValue(1);
+  }
+  return Chain;
 }
 
 SDValue
