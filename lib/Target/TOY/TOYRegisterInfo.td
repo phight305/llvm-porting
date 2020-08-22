@@ -8,4 +8,5 @@ foreach i = 0-3 in {
 def ZERO : TOYReg<12, "zero">;
 def SP : TOYReg<13, "sp">;
 def LR : TOYReg<14, "lr">;
-def GRRegs : RegisterClass<"TOY", [i32], 32, (add R0, R1, R2, R3, ZERO, SP)>;
+def TMP : TOYReg<15, "tmp">;
+def GRRegs : RegisterClass<"TOY", [i32], 32, (add R0, R1, R2, R3, ZERO, SP, LR, TMP)>;

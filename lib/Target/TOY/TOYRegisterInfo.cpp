@@ -40,10 +40,13 @@ const uint16_t* TOYRegisterInfo::getCalleeSavedRegs(const MachineFunction *MF) c
 }
 
 BitVector TOYRegisterInfo::getReservedRegs(const MachineFunction &MF) const {
-  // llvm_unreachable("getReservedRegs not implemented yet");
   BitVector Reserved(getNumRegs());
+
+  Reserved.set(TOY::ZERO);
   Reserved.set(TOY::SP);
   Reserved.set(TOY::LR);
+  Reserved.set(TOY::TMP);
+
   return Reserved;
 }
 
@@ -55,8 +58,28 @@ eliminateCallFramePseudoInstr(MachineFunction &MF, MachineBasicBlock &MBB,
 
 void
 TOYRegisterInfo::eliminateFrameIndex(MachineBasicBlock::iterator II,
-                                       int SPAdj, RegScavenger *RS) const {
-  llvm_unreachable("eliminateFrameIndex not implemented yet");
+                                     int SPAdj, RegScavenger *RS) const {
+  unsigned i = 0;
+  MachineInstr &MI = *II;
+  DebugLoc dl = MI.getDebugLoc();
+  while (!MI.getOperand(i).isFI()) {
+    ++i;
+    assert(i < MI.getNumOperands() &&
+           "Instr doesn't have FrameIndex operand!");
+  }
+
+  MachineFunction &MF = *MI.getParent()->getParent();
+  MachineFrameInfo *MFI = MF.getFrameInfo();
+  int StackSize = (int)(MFI->getStackSize());
+  int FrameIndex = MI.getOperand(i).getIndex();
+  int Offset = MF.getFrameInfo()->getObjectOffset(FrameIndex) - StackSize;
+
+  BuildMI(*MI.getParent(), II, dl, TII.get(TOY::ADDri), TOY::TMP)
+    .addReg(MI.getOperand(i + 1).getReg())
+    .addImm(Offset);
+
+  MI.getOperand(i).ChangeToRegister(TOY::SP, false/*IsDef*/);
+  MI.getOperand(i+1).ChangeToRegister(TOY::TMP, false/*IsDef*/);
 }
 
 unsigned TOYRegisterInfo::getFrameRegister(const MachineFunction &MF) const {

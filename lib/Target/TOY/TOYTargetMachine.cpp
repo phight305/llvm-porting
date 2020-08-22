@@ -30,9 +30,7 @@ TOYTargetMachine::TOYTargetMachine(const Target &T, StringRef TT, StringRef
       Subtarget(TT, CPU, FS),
       DL(Subtarget.getDataLayout()),
       InstrInfo(Subtarget),
-      TLInfo(*this) {}
-      // InstrInfo(Subtarget),
-      // TLInfo(*this), FrameLowering(Subtarget)
+      TLInfo(*this), FrameLowering(Subtarget) {}
 
 namespace {
 /// TOY Code Generator Pass Configuration Options.

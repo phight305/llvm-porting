@@ -17,6 +17,16 @@ def ADDrr :
           "add $dst, $src1,z$src2",
           [(set (i32 GRRegs:$dst), (add (i32 GRRegs:$src1), (i32 GRRegs:$src2)))]>;
 
+def ADDri :
+  InstTOY<(outs GRRegs:$dst), (ins GRRegs:$src1, i32imm:$src2),
+          "addi $dst, $src1, $src2",
+          [(set (i32 GRRegs:$dst), (add (i32 GRRegs:$src1), (i32 imm:$src2)))]>;
+
+def SUBri :
+  InstTOY<(outs GRRegs:$dst), (ins GRRegs:$src1, i32imm:$src2),
+          "subi $dst, $src1, $src2",
+          [(set (i32 GRRegs:$dst), (sub (i32 GRRegs:$src1), (i32 imm:$src2)))]>;
+
 // Load/Store instructions
 def STORErr :
   InstTOY<(outs), (ins GRRegs:$src, MEMrr:$addr),

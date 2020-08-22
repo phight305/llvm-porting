@@ -16,11 +16,11 @@
 
 #include "TOYInstrInfo.h"
 #include "TOYISelLowering.h"
-// #include "TOYFrameLowering.h"
+#include "TOYFrameLowering.h"
 #include "TOYSubtarget.h"
 #include "llvm/Target/TargetMachine.h"
 #include "llvm/DataLayout.h"
-// #include "llvm/Target/TargetFrameLowering.h"
+ #include "llvm/Target/TargetFrameLowering.h"
 // #include "llvm/Target/TargetTransformImpl.h"
 
 namespace llvm {
@@ -30,7 +30,7 @@ class TOYTargetMachine : public LLVMTargetMachine {
   const DataLayout DL;       // Calculates type size & alignment
   TOYInstrInfo InstrInfo;
   TOYTargetLowering TLInfo;
-  // TOYFrameLowering FrameLowering;
+  TOYFrameLowering FrameLowering;
 public:
   TOYTargetMachine(const Target &T, StringRef TT,
                    StringRef CPU, StringRef FS, const TargetOptions &Options,
@@ -39,10 +39,9 @@ public:
   virtual const TOYInstrInfo *getInstrInfo() const {
     return &InstrInfo;
   }
-  // virtual const TargetFrameLowering  *getFrameLowering() const {
-    // llvm_unreachable("getFrameLowering not implemented yet\n");
-    // return &FrameLowering;
-  // }
+  virtual const TargetFrameLowering  *getFrameLowering() const {
+    return &FrameLowering;
+  }
   virtual const TOYSubtarget *getSubtargetImpl() const {
     return &Subtarget;
   }

@@ -15,7 +15,7 @@ add_llvm_target(TOYCodeGen
    TOYInstrInfo.cpp
    TOYISelDAGToDAG.cpp
    TOYISelLowering.cpp
-#  TOYFrameLowering.cpp
+   TOYFrameLowering.cpp
 #  TOYMachineFunctionInfo.cpp
    TOYRegisterInfo.cpp
    TOYSubtarget.cpp
