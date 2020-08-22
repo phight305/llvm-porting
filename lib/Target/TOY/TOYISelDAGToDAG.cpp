@@ -75,13 +75,19 @@ bool TOYDAGToDAGISel::SelectADDRri(SDValue Addr,
 }
 
 bool TOYDAGToDAGISel::SelectADDRrr(SDValue Addr, SDValue &R1, SDValue &R2) {
-  llvm_unreachable("SelectADDRrr not implemented yet!\n");
+  if (FrameIndexSDNode *FIN = dyn_cast<FrameIndexSDNode>(Addr)) {
+    R1 = CurDAG->getTargetFrameIndex(FIN->getIndex(), MVT::i32);
+    R2 = CurDAG->getRegister(TOY::ZERO, MVT::i32);
+    return true;
+  }
+
+  // Other addrs are not supported yet
+  return false;
 }
 
 SDNode *TOYDAGToDAGISel::Select(SDNode *N) {
   return SelectCode(N);
 }
-
 
 /// SelectInlineAsmMemoryOperand - Implement addressing mode selection for
 /// inline asm expressions.
