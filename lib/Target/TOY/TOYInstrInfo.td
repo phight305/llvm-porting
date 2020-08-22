@@ -23,6 +23,11 @@ def STORErr :
           "store $src0, $addr",
           [(store GRRegs:$src, ADDRrr:$addr)]>;
 
+def LOADrr :
+  InstTOY<(outs GRRegs:$dst), (ins MEMrr:$addr),
+          "load $dst, $addr",
+          [(set (i32 GRRegs:$dst), (load ADDRrr:$addr))]>;
+
 // Data movement instructions
 def MOVi :
   InstTOY<(outs GRRegs:$dst), (ins i32imm:$src),
