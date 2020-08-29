@@ -11,6 +11,20 @@ def MEMrr : Operand<i32> {
   let MIOperandInfo = (ops GRRegs, GRRegs);
 }
 
+// Call instruction
+def SDT_TOYCall : SDTypeProfile<0, -1, [SDTCisVT<0, i32>]>;
+def call : SDNode<"TOYISD::CALL", SDT_TOYCall,
+                  [SDNPHasChain, SDNPOptInGlue, SDNPOutGlue, SDNPVariadic]>;
+
+def calltarget : Operand<i32>;
+
+let isCall = 1, Uses = [SP] in {
+  def CALL :
+    InstTOY<(outs), (ins calltarget:$dst, variable_ops),
+            "call $dst",
+            [(call tglobaladdr:$dst)]>;
+}
+
 // ALU instructions
 def ADDrr :
   InstTOY<(outs GRRegs:$dst), (ins GRRegs:$src1, GRRegs:$src2),

@@ -81,8 +81,22 @@ bool TOYDAGToDAGISel::SelectADDRrr(SDValue Addr, SDValue &R1, SDValue &R2) {
     return true;
   }
 
-  // Other addrs are not supported yet
-  return false;
+  if (Addr.getOpcode() == ISD::ADD) {
+    R1 = Addr.getOperand(0);
+    R2 = Addr.getOperand(1);
+    return true;
+  }
+
+  R1 = Addr;
+  R2 = CurDAG->getTargetConstant(0, MVT::i32);
+  return true;
+}
+
+const char *TOYTargetLowering::getTargetNodeName(unsigned Opcode) const {
+  switch (Opcode) {
+  default: return 0;
+  case TOYISD::CALL: return "TOYISD::CALL";
+  }
 }
 
 SDNode *TOYDAGToDAGISel::Select(SDNode *N) {

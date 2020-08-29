@@ -20,6 +20,13 @@
 
 namespace llvm {
 
+  namespace TOYISD {
+    enum {
+      FIRST_NUMBER = ISD::BUILTIN_OP_END,
+      CALL // A call instruction.
+    };
+  }
+
   class TOYTargetLowering : public TargetLowering {
   public:
     TOYTargetLowering(TargetMachine &TM);
@@ -43,6 +50,8 @@ namespace llvm {
                   const SmallVectorImpl<ISD::OutputArg> &Outs,
                   const SmallVectorImpl<SDValue> &OutVals,
                   DebugLoc dl, SelectionDAG &DAG) const;
+
+    virtual const char *getTargetNodeName(unsigned Opcode) const;
   };
 } // end namespace llvm
 
