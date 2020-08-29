@@ -18,11 +18,23 @@ def call : SDNode<"TOYISD::CALL", SDT_TOYCall,
 
 def calltarget : Operand<i32>;
 
-let isCall = 1, Uses = [SP] in {
+let isCall = 1, isBarrier = 1, Uses = [SP] in {
   def CALL :
     InstTOY<(outs), (ins calltarget:$dst, variable_ops),
             "call $dst",
             [(call tglobaladdr:$dst)]>;
+}
+
+// Return instruction
+def SDT_SPRet     : SDTypeProfile<0, 1, [SDTCisVT<0, i32>]>;
+def retflag       : SDNode<"TOYISD::RET_FLAG", SDT_SPRet,
+                           [SDNPHasChain, SDNPOptInGlue]>;
+
+let isReturn = 1, isTerminator = 1, isBarrier = 1 in {
+  def RET :
+    InstTOY<(outs), (ins GRRegs:$ra),
+            "ret $ra",
+            [(retflag (i32 GRRegs:$ra))]>;
 }
 
 // ALU instructions

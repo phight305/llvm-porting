@@ -95,7 +95,8 @@ bool TOYDAGToDAGISel::SelectADDRrr(SDValue Addr, SDValue &R1, SDValue &R2) {
 const char *TOYTargetLowering::getTargetNodeName(unsigned Opcode) const {
   switch (Opcode) {
   default: return 0;
-  case TOYISD::CALL: return "TOYISD::CALL";
+  case TOYISD::CALL:     return "TOYISD::CALL";
+  case TOYISD::RET_FLAG: return "TOYIDS::RET_FLAG";
   }
 }
 

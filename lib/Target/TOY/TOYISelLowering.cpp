@@ -66,7 +66,12 @@ TOYTargetLowering::LowerReturn(SDValue Chain,
     // Guarantee that all emitted copies are stuck together with flags.
     Flag = Chain.getValue(1);
   }
-  return Chain;
+
+  if (Flag.getNode())
+    return DAG.getNode(TOYISD::RET_FLAG, dl, MVT::Other, Chain,
+                       DAG.getRegister(TOY::LR, MVT::i32), Flag);
+  return DAG.getNode(TOYISD::RET_FLAG, dl, MVT::Other, Chain,
+                     DAG.getRegister(TOY::LR, MVT::i32));
 }
 
 SDValue

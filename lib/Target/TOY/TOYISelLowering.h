@@ -23,7 +23,8 @@ namespace llvm {
   namespace TOYISD {
     enum {
       FIRST_NUMBER = ISD::BUILTIN_OP_END,
-      CALL // A call instruction.
+      CALL,      // A call instruction.
+      RET_FLAG   // A return instruction.
     };
   }
 
