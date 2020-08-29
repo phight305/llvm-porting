@@ -95,7 +95,18 @@ TOYTargetLowering::LowerFormalArguments(SDValue Chain,
       InVals.push_back(ArgValue);
     }
     else {
-      llvm_unreachable("Arg put into stack has not been implemented");
+      unsigned Offset = VA.getLocMemOffset();
+      int FI = MF.getFrameInfo()->CreateFixedObject(4, Offset, true/*Immutable*/); // immutable objects are assumed to never change during the function execution.
+      SDValue FIPtr = DAG.getFrameIndex(FI, getPointerTy());
+      SDValue Load;
+      if (VA.getValVT() == MVT::i32) {
+          Load = DAG.getLoad(VA.getValVT(), dl, Chain, FIPtr,
+                             MachinePointerInfo(),
+                             false, false, false, 4);
+      } else {
+          llvm_unreachable("Other types in stack are not supported yet!");
+      }
+      InVals.push_back(Load);
     }
   }
   return Chain;

@@ -1,5 +1,5 @@
 def RetCC_TOY : CallingConv<[
-  CCIfType<[i32], CCAssignToReg<[LR]>>,
+  CCIfType<[i32], CCAssignToReg<[R0]>>,
   CCIfType<[i32], CCAssignToStack<4, 4>>
 ]>;
 
