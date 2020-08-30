@@ -12,7 +12,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "TOYInstrInfo.h"
-// #include "TOY.h"
+#include "TOY.h"
 // #include "TOYMachineFunctionInfo.h"
 #include "TOYSubtarget.h"
 #include "llvm/CodeGen/MachineInstrBuilder.h"
@@ -39,7 +39,16 @@ TOYInstrInfo::TOYInstrInfo(TOYSubtarget &ST)
 /// any side effects other than loading from the stack slot.
 unsigned TOYInstrInfo::isLoadFromStackSlot(const MachineInstr *MI,
                                            int &FrameIndex) const {
-  llvm_unreachable("isLoadFromStackSlot not implemented\n");
+  switch (MI->getOpcode()) {
+  default: break;
+  case TOY::LOADrr:
+    if (MI->getOperand(1).isFI()) {
+      FrameIndex = MI->getOperand(1).getIndex();
+      return MI->getOperand(0).getReg();
+    }
+    break;
+  }
+  return 0;
 }
 
 /// isStoreToStackSlot - If the specified machine instruction is a direct
@@ -49,7 +58,16 @@ unsigned TOYInstrInfo::isLoadFromStackSlot(const MachineInstr *MI,
 /// any side effects other than storing to the stack slot.
 unsigned TOYInstrInfo::isStoreToStackSlot(const MachineInstr *MI,
                                           int &FrameIndex) const {
-  llvm_unreachable("isStoreToStackSlot not implemented\n");
+  switch (MI->getOpcode()) {
+  default: break;
+  case TOY::STORErr:
+    if (MI->getOperand(1).isFI()) {
+      FrameIndex = MI->getOperand(1).getIndex();
+      return MI->getOperand(0).getReg();
+    }
+    break;
+  }
+  return 0;
 }
 
 MachineInstr *
@@ -96,7 +114,10 @@ storeRegToStackSlot(MachineBasicBlock &MBB, MachineBasicBlock::iterator I,
                     unsigned SrcReg, bool isKill, int FI,
                     const TargetRegisterClass *RC,
                     const TargetRegisterInfo *TRI) const {
-  llvm_unreachable("storeRegToStackSlot not implemented\n");
+  DebugLoc DL;
+  if (I != MBB.end())
+    DL = I->getDebugLoc();
+  BuildMI(MBB, I, DL, get(TOY::STORErr)).addReg(SrcReg).addFrameIndex(FI).addReg(TOY::ZERO);
 }
 
 void TOYInstrInfo::
@@ -104,7 +125,10 @@ loadRegFromStackSlot(MachineBasicBlock &MBB, MachineBasicBlock::iterator I,
                      unsigned DestReg, int FI,
                      const TargetRegisterClass *RC,
                      const TargetRegisterInfo *TRI) const {
-  llvm_unreachable("loadRegFromStackSlot not implemented\n");
+  DebugLoc DL;
+  if (I != MBB.end())
+    DL = I->getDebugLoc();
+  BuildMI(MBB, I, DL, get(TOY::LOADrr), DestReg).addFrameIndex(FI).addReg(TOY::ZERO);
 }
 
 unsigned TOYInstrInfo::getGlobalBaseReg(MachineFunction *MF) const

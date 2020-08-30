@@ -18,7 +18,7 @@ def call : SDNode<"TOYISD::CALL", SDT_TOYCall,
 
 def calltarget : Operand<i32>;
 
-let isCall = 1, isBarrier = 1, Uses = [SP] in {
+let isCall = 1, isBarrier = 1, Defs = [LR], Uses = [SP] in {
   def CALL :
     InstTOY<(outs), (ins calltarget:$dst, variable_ops),
             "call $dst",

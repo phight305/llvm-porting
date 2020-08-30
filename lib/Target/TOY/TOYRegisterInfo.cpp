@@ -35,7 +35,7 @@ TOYRegisterInfo::TOYRegisterInfo(TOYSubtarget &st,
 
 const uint16_t* TOYRegisterInfo::getCalleeSavedRegs(const MachineFunction *MF) const {
   // llvm_unreachable("getCalleeSavedRegs not implemented yet");
-  static const uint16_t CalleeSavedRegs[] = { 0 };
+  static const uint16_t CalleeSavedRegs[] = { TOY::LR, TOY::R2, TOY::R3 };
   return CalleeSavedRegs;
 }
 
