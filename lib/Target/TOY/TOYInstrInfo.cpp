@@ -84,9 +84,8 @@ bool TOYInstrInfo::AnalyzeBranch(MachineBasicBlock &MBB,
                                  MachineBasicBlock *&TBB,
                                  MachineBasicBlock *&FBB,
                                  SmallVectorImpl<MachineOperand> &Cond,
-                                 bool AllowModify) const
-{
-  llvm_unreachable("AnalyzeBranch not implemented\n");
+                                 bool AllowModify) const {
+  return false;
 }
 
 unsigned
@@ -97,8 +96,7 @@ TOYInstrInfo::InsertBranch(MachineBasicBlock &MBB,MachineBasicBlock *TBB,
   llvm_unreachable("InsertBranch not implemented\n");
 }
 
-unsigned TOYInstrInfo::RemoveBranch(MachineBasicBlock &MBB) const
-{
+unsigned TOYInstrInfo::RemoveBranch(MachineBasicBlock &MBB) const {
   llvm_unreachable("RemoveBranch not implemented\n");
 }
 
@@ -106,7 +104,13 @@ void TOYInstrInfo::copyPhysReg(MachineBasicBlock &MBB,
                                MachineBasicBlock::iterator I, DebugLoc DL,
                                unsigned DestReg, unsigned SrcReg,
                                bool KillSrc) const {
-  llvm_unreachable("copyPhysReg not implemented\n");
+  if (TOY::GRRegsRegClass.contains(DestReg) && TOY::GRRegsRegClass.contains(SrcReg)) {
+    BuildMI(MBB, I, DL, get(TOY::ADDri), DestReg).addReg(SrcReg).addImm(0);
+    return;
+  }
+  else {
+    llvm_unreachable("COPY with other register classes is not supported");
+  }
 }
 
 void TOYInstrInfo::
@@ -131,7 +135,6 @@ loadRegFromStackSlot(MachineBasicBlock &MBB, MachineBasicBlock::iterator I,
   BuildMI(MBB, I, DL, get(TOY::LOADrr), DestReg).addFrameIndex(FI).addReg(TOY::ZERO);
 }
 
-unsigned TOYInstrInfo::getGlobalBaseReg(MachineFunction *MF) const
-{
+unsigned TOYInstrInfo::getGlobalBaseReg(MachineFunction *MF) const {
   llvm_unreachable("getGlobalBaseReg not implemented\n");
 }
