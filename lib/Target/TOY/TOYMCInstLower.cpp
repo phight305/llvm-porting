@@ -34,10 +34,30 @@ MCOperand TOYMCInstLower::LowerSymbolOperand(const MachineOperand &MO,
 }
 
 MCOperand TOYMCInstLower::LowerOperand(const MachineOperand &MO,
-                                        unsigned offset) const {
-  llvm_unreachable("LowerOperand not been implemented yet!");
+                                       unsigned offset) const {
+  MachineOperandType MOTy = MO.getType();
+
+  switch (MOTy) {
+  default: llvm_unreachable("unknown operand type");
+  case MachineOperand::MO_Register:
+    // Ignore all implicit register operands.
+    if (MO.isImplicit()) break;
+    return MCOperand::CreateReg(MO.getReg());
+  case MachineOperand::MO_Immediate:
+    return MCOperand::CreateImm(MO.getImm() + offset);
+  }
+
+  return MCOperand();
 }
 
 void TOYMCInstLower::Lower(const MachineInstr *MI, MCInst &OutMI) const {
-  llvm_unreachable("Lower not been implemented yet!");
+  OutMI.setOpcode(MI->getOpcode());
+
+  for (unsigned i = 0, e = MI->getNumOperands(); i != e; ++i) {
+    const MachineOperand &MO = MI->getOperand(i);
+    MCOperand MCOp = LowerOperand(MO);
+
+    if (MCOp.isValid())
+      OutMI.addOperand(MCOp);
+  }
 }

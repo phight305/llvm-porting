@@ -68,7 +68,15 @@ namespace {
     void printCCOperand(const MachineInstr *MI, int opNum, raw_ostream &OS);
 
     virtual void EmitInstruction(const MachineInstr *MI) {
-      llvm_unreachable("EmitInstruction not implemented yet!\n");
+      MachineBasicBlock::const_instr_iterator I = MI;
+      MachineBasicBlock::const_instr_iterator E = MI->getParent()->instr_end();
+
+      do {
+        MCInst TmpInst0;
+        MCInstLowering.Lower(I++, TmpInst0);
+
+        OutStreamer.EmitInstruction(TmpInst0);
+      } while ((I != E) && I->isInsideBundle()); // Delay slot check
     }
     void printInstruction(const MachineInstr *MI, raw_ostream &OS);// autogen'd.
     static const char *getRegisterName(unsigned RegNo);
