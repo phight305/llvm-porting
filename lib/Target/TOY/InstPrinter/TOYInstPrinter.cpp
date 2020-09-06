@@ -26,12 +26,12 @@ using namespace llvm;
 #include "TOYGenAsmWriter.inc"
 
 void TOYInstPrinter::printRegName(raw_ostream &OS, unsigned RegNo) const {
-  llvm_unreachable("printRegName not implemented yet");
+  OS << '$' << StringRef(getRegisterName(RegNo)).lower();
 }
 
 void TOYInstPrinter::printInst(const MCInst *MI, raw_ostream &O,
                                StringRef Annot) {
-  llvm_unreachable("printInst not implemented yet");
+  printInstruction(MI, O);
 }
 
 static void printExpr(const MCExpr *Expr, raw_ostream &OS) {
@@ -40,7 +40,16 @@ static void printExpr(const MCExpr *Expr, raw_ostream &OS) {
 
 void TOYInstPrinter::printOperand(const MCInst *MI, unsigned OpNo,
                                   raw_ostream &O) {
-  llvm_unreachable("printOperand not implemented yet");
+  const MCOperand &Op = MI->getOperand(OpNo);
+  if (Op.isReg()) {
+    printRegName(O, Op.getReg());
+    return;
+  }
+
+  if (Op.isImm()) {
+    O << Op.getImm();
+    return;
+  }
 }
 
 void TOYInstPrinter::printUnsignedImm(const MCInst *MI, int opNum,
@@ -50,7 +59,10 @@ void TOYInstPrinter::printUnsignedImm(const MCInst *MI, int opNum,
 
 void TOYInstPrinter::
 printMemOperand(const MCInst *MI, int opNum, raw_ostream &O) {
-  llvm_unreachable("printMemOperand not implemented yet");
+  printOperand(MI, opNum+1, O);
+  O << "(";
+  printOperand(MI, opNum, O);
+  O << ")";
 }
 
 void TOYInstPrinter::
