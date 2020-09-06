@@ -56,7 +56,7 @@ def SUBri :
 // Load/Store instructions
 def STORErr :
   InstTOY<(outs), (ins GRRegs:$src, MEMrr:$addr),
-          "store $src0, $addr",
+          "store $src, $addr",
           [(store GRRegs:$src, ADDRrr:$addr)]>;
 
 def LOADrr :

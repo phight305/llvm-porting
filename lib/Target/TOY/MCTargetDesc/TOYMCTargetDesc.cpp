@@ -12,6 +12,7 @@
 //===----------------------------------------------------------------------===//
 #include "TOYMCTargetDesc.h"
 #include "TOYMCAsmInfo.h"
+#include "InstPrinter/TOYInstPrinter.h"
 #include "llvm/MC/MCCodeGenInfo.h"
 #include "llvm/MC/MCInstrInfo.h"
 #include "llvm/MC/MCRegisterInfo.h"
@@ -55,6 +56,16 @@ static MCCodeGenInfo *createTOYMCCodeGenInfo(StringRef TT, Reloc::Model RM,
   // X->InitMCCodeGenInfo(RM, CM, OL);
   // return X;
 }
+
+static MCInstPrinter *createTOYMCInstPrinter(const Target &T,
+                                              unsigned SyntaxVariant,
+                                              const MCAsmInfo &MAI,
+                                              const MCInstrInfo &MII,
+                                              const MCRegisterInfo &MRI,
+                                              const MCSubtargetInfo &STI) {
+  return new TOYInstPrinter(MAI, MII, MRI);
+}
+
 extern "C" void LLVMInitializeTOYTargetMC() {
   // Register the MC asm info.
   RegisterMCAsmInfo<TOYELFMCAsmInfo> X(TheTOYTarget);
@@ -75,4 +86,7 @@ extern "C" void LLVMInitializeTOYTargetMC() {
   // Register the MC subtarget info.
   // TargetRegistry::RegisterMCSubtargetInfo(TheTOYTarget,
   //                                         createTOYMCSubtargetInfo);
+
+  TargetRegistry::RegisterMCInstPrinter(TheTOYTarget,
+                                        createTOYMCInstPrinter);
 }

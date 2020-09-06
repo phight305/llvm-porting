@@ -32,9 +32,15 @@ class Proc<string Name, list<SubtargetFeature> Features>
 
 def : Proc<"generic",         [FeatureIsV1]>;
 
+def TOYAsmWriter : AsmWriter {
+  string AsmWriterClassName  = "InstPrinter";
+  bit isMCAsmWriter = 1;
+}
+
 def TOYInstrInfo : InstrInfo;
 
 def TOY : Target {
   // Pull in Instruction Info:
   let InstructionSet = TOYInstrInfo;
+  let AssemblyWriters = [TOYAsmWriter ];
 }

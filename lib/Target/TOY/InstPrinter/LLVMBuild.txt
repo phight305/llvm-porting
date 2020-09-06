@@ -1,4 +1,4 @@
-;===- ./lib/Target/TOY/LLVMBuild.txt -------------------------*- Conf -*--===;
+;===- ./lib/Target/TOY/InstPrinter/LLVMBuild.txt --------------*- Conf -*--===;
 ;
 ;                     The LLVM Compiler Infrastructure
 ;
@@ -15,18 +15,9 @@
 ;
 ;===------------------------------------------------------------------------===;
 
-[common]
-subdirectories = InstPrinter MCTargetDesc TargetInfo
-
 [component_0]
-type = TargetGroup
-name = TOY
-parent = Target
-;has_asmprinter = 1
-
-[component_1]
 type = Library
-name = TOYCodeGen
+name = TOYAsmPrinter
 parent = TOY
-required_libraries = AsmPrinter CodeGen Core MC SelectionDAG TOYAsmPrinter TOYDesc TOYInfo Support Target
-add_to_library_groups = TOY 
+required_libraries = MC Support
+add_to_library_groups = TOY
