@@ -70,7 +70,7 @@ public:
   ///
   /// \param Inst - The instruction to test.
   bool mayNeedRelaxation(const MCInst &Inst) const {
-    llvm_unreachable("mayNeedRelaxation is not implemented yet");
+    return false;
   }
 
   /// fixupNeedsRelaxation - Target specific predicate for whether a given
