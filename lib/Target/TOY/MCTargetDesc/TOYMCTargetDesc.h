@@ -16,8 +16,12 @@
 
 namespace llvm {
 class Target;
+class MCAsmBackend;
+class StringRef;
 
 extern Target TheTOYTarget;
+
+MCAsmBackend *createTOYAsmBackend(const Target &T, StringRef TT, StringRef CPU);
 
 } // End llvm namespace
 
