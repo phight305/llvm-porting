@@ -17,6 +17,7 @@
 #include "llvm/MC/MCInstrInfo.h"
 #include "llvm/MC/MCRegisterInfo.h"
 #include "llvm/MC/MCSubtargetInfo.h"
+#include "llvm/MC/MCStreamer.h"
 // #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/TargetRegistry.h" // For RegisterMCAsmInfo
 
@@ -66,6 +67,17 @@ static MCInstPrinter *createTOYMCInstPrinter(const Target &T,
   return new TOYInstPrinter(MAI, MII, MRI);
 }
 
+static MCStreamer *createMCStreamer(const Target &T, StringRef TT,
+                                    MCContext &Ctx, MCAsmBackend &MAB,
+                                    raw_ostream &_OS,
+                                    MCCodeEmitter *_Emitter,
+                                    bool RelaxAll,
+                                    bool NoExecStack) {
+  Triple TheTriple(TT);
+
+  return createELFStreamer(Ctx, MAB, _OS, _Emitter, RelaxAll, NoExecStack);
+}
+
 extern "C" void LLVMInitializeTOYTargetMC() {
   // Register the MC asm info.
   RegisterMCAsmInfo<TOYELFMCAsmInfo> X(TheTOYTarget);
@@ -92,4 +104,6 @@ extern "C" void LLVMInitializeTOYTargetMC() {
                                        createTOYAsmBackend);
   TargetRegistry::RegisterMCInstPrinter(TheTOYTarget,
                                         createTOYMCInstPrinter);
+  TargetRegistry::RegisterMCObjectStreamer(TheTOYTarget,
+                                           createMCStreamer);
 }
