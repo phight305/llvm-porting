@@ -14,6 +14,8 @@
 #ifndef TOYMCTARGETDESC_H
 #define TOYMCTARGETDESC_H
 
+#include "llvm/Support/DataTypes.h" // uint8_t
+
 namespace llvm {
 class Target;
 class MCAsmBackend;
@@ -22,6 +24,8 @@ class MCRegisterInfo;
 class MCSubtargetInfo;
 class MCContext;
 class MCCodeEmitter;
+class MCObjectWriter;
+class raw_ostream;
 class StringRef;
 
 extern Target TheTOYTarget;
@@ -32,6 +36,10 @@ MCCodeEmitter *createTOYMCCodeEmitter(const MCInstrInfo &MCII,
                                       MCContext &Ctx);
 MCAsmBackend *createTOYAsmBackend(const Target &T, StringRef TT, StringRef CPU);
 
+MCObjectWriter *createTOYELFObjectWriter(raw_ostream &OS,
+                                         uint8_t OSABI,
+                                         bool IsLittleEndian,
+                                         bool Is64Bit);
 } // End llvm namespace
 
 // Defines symbolic names for TOY registers.  This defines a mapping from

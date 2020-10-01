@@ -287,6 +287,7 @@ enum {
   EM_VIDEOCORE5    = 198, // Broadcom VideoCore V processor
   EM_78KOR         = 199, // Renesas 78KOR family
   EM_56800EX       = 200, // Freescale 56800EX Digital Signal Controller (DSC)
+  EM_TOY           = 201,
   EM_MBLAZE        = 47787 // Xilinx MicroBlaze
 };
 

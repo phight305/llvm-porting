@@ -33,12 +33,17 @@ static unsigned adjustFixupValue(unsigned Kind, uint64_t Value) {
 namespace {
 class TOYAsmBackend : public MCAsmBackend {
 
+  Triple::OSType OSType;
+  bool IsLittle;
+  bool Is64Bit;
+
 public:
   TOYAsmBackend(const Target &T, Triple::OSType _OSType, bool _isLittle, bool _is64Bit)
-    :MCAsmBackend() {}
+    :MCAsmBackend(), OSType(_OSType), IsLittle(_isLittle), Is64Bit(_is64Bit) {}
 
   MCObjectWriter *createObjectWriter(raw_ostream &OS) const {
-    llvm_unreachable("createObjectWriter is not implemented yet");
+    return createTOYELFObjectWriter(OS,
+      MCELFObjectTargetWriter::getOSABI(OSType), IsLittle, Is64Bit);
   }
 
   /// ApplyFixup - Apply the \p Value for given \p Fixup into the provided
