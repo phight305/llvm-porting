@@ -39,11 +39,15 @@ public:
   ~TOYMCCodeEmitter() {}
 
   void EmitByte(unsigned char C, raw_ostream &OS) const {
-    llvm_unreachable("EmitByte is not implemented yet");
+    OS << (char)C;
   }
 
   void EmitInstruction(uint64_t Val, unsigned Size, raw_ostream &OS) const {
-    llvm_unreachable("EmitInstruction is not implemented yet");
+    // TOY is little-edian
+    for (unsigned i = 0; i < Size; ++i) {
+      unsigned Shift = i * 8;
+      EmitByte((Val >> Shift) & 0xff, OS);
+    }
   }
 
   void EncodeInstruction(const MCInst &MI, raw_ostream &OS,
@@ -93,7 +97,8 @@ MCCodeEmitter *llvm::createTOYMCCodeEmitter(const MCInstrInfo &MCII,
 void TOYMCCodeEmitter::
 EncodeInstruction(const MCInst &MI, raw_ostream &OS,
                   SmallVectorImpl<MCFixup> &Fixups) const {
-  llvm_unreachable("EncodeInstruction is not implemented yet");
+  uint32_t Binary = getBinaryCodeForInstr(MI, Fixups);
+  EmitInstruction(Binary, 4, OS);
 }
 
 /// getBranchTargetOpValue - Return binary encoding of the branch
