@@ -100,7 +100,8 @@ public:
   ///
   /// \return - True on success.
   bool writeNopData(uint64_t Count, MCObjectWriter *OW) const {
-    llvm_unreachable("writeNopData is not implemented yet");
+    // All instructions are 32 bits, so it is not required to insert nop to do alignment
+    return true;
   }
 }; // class TOYAsmBackend
 

@@ -692,6 +692,11 @@ enum {
   R_MIPS_NUM               = 218
 };
 
+// TOY Specific e_flags
+enum {
+  EF_TOY_ARCH = 0x00000001
+};
+
 // Hexagon Specific e_flags
 // Release 5 ABI
 enum {

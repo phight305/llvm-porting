@@ -51,7 +51,7 @@ TOYELFObjectWriter::~TOYELFObjectWriter() {}
 
 // FIXME: get the real EABI Version from the Subtarget class.
 unsigned TOYELFObjectWriter::getEFlags() const {
-  llvm_unreachable("getFlags is not implemented yet");
+  return ELF::EF_TOY_ARCH;
 }
 
 const MCSymbol *TOYELFObjectWriter::ExplicitRelSym(const MCAssembler &Asm,
