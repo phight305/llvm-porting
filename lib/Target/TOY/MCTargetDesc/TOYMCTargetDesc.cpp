@@ -86,6 +86,8 @@ extern "C" void LLVMInitializeTOYTargetMC() {
   // Register the MC subtarget info.
   // TargetRegistry::RegisterMCSubtargetInfo(TheTOYTarget,
   //                                         createTOYMCSubtargetInfo);
+  TargetRegistry::RegisterMCCodeEmitter(TheTOYTarget,
+                                        createTOYMCCodeEmitter);
   TargetRegistry::RegisterMCAsmBackend(TheTOYTarget,
                                        createTOYAsmBackend);
   TargetRegistry::RegisterMCInstPrinter(TheTOYTarget,

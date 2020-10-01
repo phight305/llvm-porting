@@ -17,10 +17,19 @@
 namespace llvm {
 class Target;
 class MCAsmBackend;
+class MCInstrInfo;
+class MCRegisterInfo;
+class MCSubtargetInfo;
+class MCContext;
+class MCCodeEmitter;
 class StringRef;
 
 extern Target TheTOYTarget;
 
+MCCodeEmitter *createTOYMCCodeEmitter(const MCInstrInfo &MCII,
+                                      const MCRegisterInfo &MRI,
+                                      const MCSubtargetInfo &STI,
+                                      MCContext &Ctx);
 MCAsmBackend *createTOYAsmBackend(const Target &T, StringRef TT, StringRef CPU);
 
 } // End llvm namespace
