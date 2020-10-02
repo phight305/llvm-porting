@@ -41,12 +41,30 @@ let isReturn = 1, isTerminator = 1, isBarrier = 1 in {
 def ADDrr :
   InstTOY<(outs GRRegs:$dst), (ins GRRegs:$src1, GRRegs:$src2),
           "add $dst, $src1, $src2",
-          [(set (i32 GRRegs:$dst), (add (i32 GRRegs:$src1), (i32 GRRegs:$src2)))]>;
+          [(set (i32 GRRegs:$dst), (add (i32 GRRegs:$src1), (i32 GRRegs:$src2)))]> {
+  bits<4> dst;
+  bits<4> src1;
+  bits<4> src2;
+  let Inst{31-17} = 0;
+  let Inst{28-24} = 0b00001; // Opcode
+  let Inst{11-8} = dst;
+  let Inst{7-4} = src1;
+  let Inst{3-0} = src2;
+}
 
 def ADDri :
   InstTOY<(outs GRRegs:$dst), (ins GRRegs:$src1, i32imm:$src2),
           "addi $dst, $src1, $src2",
-          [(set (i32 GRRegs:$dst), (add (i32 GRRegs:$src1), (i32 imm:$src2)))]>;
+          [(set (i32 GRRegs:$dst), (add (i32 GRRegs:$src1), (i32 imm:$src2)))]> {
+  bits<4> src1;
+  bits<16> src2;
+  bits<4> dst;
+  let Inst{31-28} = 0b0000;
+  let Inst{28-24} = 0b00010; // Opcode
+  let Inst{23-20} = dst;
+  let Inst{19-16} = src1;
+  let Inst{15-0} = src2;
+}
 
 def SUBri :
   InstTOY<(outs GRRegs:$dst), (ins GRRegs:$src1, i32imm:$src2),

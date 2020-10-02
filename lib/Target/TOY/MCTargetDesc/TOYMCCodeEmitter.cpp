@@ -123,7 +123,26 @@ getJumpTargetOpValue(const MCInst &MI, unsigned OpNo,
 unsigned TOYMCCodeEmitter::
 getMachineOpValue(const MCInst &MI, const MCOperand &MO,
                   SmallVectorImpl<MCFixup> &Fixups) const {
-  llvm_unreachable("getMachineOpValue is not implemented yet");
+  if (MO.isReg())
+  {
+    switch (MO.getReg())
+    {
+    case TOY::R0:   return 0;
+    case TOY::R1:   return 1;
+    case TOY::R2:   return 2;
+    case TOY::R3:   return 3;
+    case TOY::ZERO: return 4;
+    case TOY::SP:   return 5;
+    case TOY::LR:   return 6;
+    case TOY::TMP:  return 7;
+    default: llvm_unreachable("Unable to encode MachineOperand!");
+    }
+  }
+  else if (MO.isImm())
+    return static_cast<unsigned>(MO.getImm());
+  else
+    llvm_unreachable("Unable to encode MachineOperand!");
+  return 0;
 }
 
 /// getMemEncoding - Return binary encoding of memory related operand.
