@@ -150,7 +150,11 @@ getMachineOpValue(const MCInst &MI, const MCOperand &MO,
 unsigned
 TOYMCCodeEmitter::getMemEncoding(const MCInst &MI, unsigned OpNo,
                                  SmallVectorImpl<MCFixup> &Fixups) const {
-  llvm_unreachable("getMemEncoding is not implemented yet");
+  assert(MI.getOperand(OpNo).isReg());
+  unsigned RegBits = getMachineOpValue(MI, MI.getOperand(OpNo), Fixups);
+  unsigned OffBits = getMachineOpValue(MI, MI.getOperand(OpNo+1), Fixups) << 4;
+
+  return OffBits | (RegBits & 0xf);
 }
 
 unsigned
