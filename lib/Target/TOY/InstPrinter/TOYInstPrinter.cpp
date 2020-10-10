@@ -35,7 +35,18 @@ void TOYInstPrinter::printInst(const MCInst *MI, raw_ostream &O,
 }
 
 static void printExpr(const MCExpr *Expr, raw_ostream &OS) {
-  llvm_unreachable("printExpr not implemented yet");
+  const MCSymbolRefExpr *SRE;
+  if (!(SRE = dyn_cast<MCSymbolRefExpr>(Expr)))
+    llvm_unreachable("This expr is not supported for printing");
+
+  switch (SRE->getKind()) {
+  default: llvm_unreachable("Invalid kind!");
+  case MCSymbolRefExpr::VK_None: break;
+  case MCSymbolRefExpr::VK_TOY_CALL: OS << "%toy_call("; break;
+  }
+
+  OS << SRE->getSymbol();
+  OS << ')';
 }
 
 void TOYInstPrinter::printOperand(const MCInst *MI, unsigned OpNo,
@@ -50,6 +61,8 @@ void TOYInstPrinter::printOperand(const MCInst *MI, unsigned OpNo,
     O << Op.getImm();
     return;
   }
+
+  printExpr(Op.getExpr(), O);
 }
 
 void TOYInstPrinter::printUnsignedImm(const MCInst *MI, int opNum,

@@ -53,10 +53,9 @@ using namespace llvm;
 namespace {
   class TOYAsmPrinter : public AsmPrinter {
   public:
-    TOYMCInstLower MCInstLowering;
 
     explicit TOYAsmPrinter(TargetMachine &TM, MCStreamer &Streamer)
-      : AsmPrinter(TM, Streamer), MCInstLowering() {}
+      : AsmPrinter(TM, Streamer) {}
 
     virtual const char *getPassName() const {
       return "TOY Assembly Printer";
@@ -71,6 +70,7 @@ namespace {
       MachineBasicBlock::const_instr_iterator I = MI;
       MachineBasicBlock::const_instr_iterator E = MI->getParent()->instr_end();
 
+      TOYMCInstLower MCInstLowering(MI->getParent()->getParent()->getContext(), *this);
       do {
         MCInst TmpInst0;
         MCInstLowering.Lower(I++, TmpInst0);
