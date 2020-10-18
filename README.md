@@ -1,4 +1,6 @@
 # llvm-porting
+[![Build Status](https://travis-ci.com/llvmphighter/llvm-porting.svg?branch=master)](https://travis-ci.com/llvmphighter/llvm-porting)
+
 This project adds an experimental architecture "**TOY**" to the LLVM backend. Most of codes related to **TOY** are under the lib/Target/TOY.
 
 ## Prerequisites
