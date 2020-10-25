@@ -13,6 +13,7 @@
 //
 #define DEBUG_TYPE "mccodeemitter"
 #include "MCTargetDesc/TOYMCTargetDesc.h"
+#include "MCTargetDesc/TOYFixupKinds.h"
 #include "llvm/ADT/APFloat.h"
 #include "llvm/ADT/Statistic.h"
 #include "llvm/MC/MCCodeEmitter.h"
@@ -123,10 +124,8 @@ getJumpTargetOpValue(const MCInst &MI, unsigned OpNo,
 unsigned TOYMCCodeEmitter::
 getMachineOpValue(const MCInst &MI, const MCOperand &MO,
                   SmallVectorImpl<MCFixup> &Fixups) const {
-  if (MO.isReg())
-  {
-    switch (MO.getReg())
-    {
+  if (MO.isReg()) {
+    switch (MO.getReg()) {
     case TOY::R0:   return 0;
     case TOY::R1:   return 1;
     case TOY::R2:   return 2;
@@ -140,8 +139,24 @@ getMachineOpValue(const MCInst &MI, const MCOperand &MO,
   }
   else if (MO.isImm())
     return static_cast<unsigned>(MO.getImm());
+  else if (MO.isExpr()) {
+    const MCExpr *Expr = MO.getExpr();
+    assert(Expr->getKind() == MCExpr::SymbolRef);
+
+    TOY::Fixups FixupKind = TOY::Fixups(0);
+
+    switch (cast<MCSymbolRefExpr>(Expr)->getKind()) {
+    default: llvm_unreachable("Unknown fixup kind!");
+    case MCSymbolRefExpr::VK_TOY_CALL :
+      FixupKind = TOY::fixup_TOY_CALL;
+      break;
+    }
+    Fixups.push_back(MCFixup::Create(0, MO.getExpr(), MCFixupKind(FixupKind)));
+  }
   else
     llvm_unreachable("Unable to encode MachineOperand!");
+
+  // All of the information is in the fixup.
   return 0;
 }
 
