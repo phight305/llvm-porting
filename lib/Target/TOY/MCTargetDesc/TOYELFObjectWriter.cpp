@@ -8,6 +8,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "MCTargetDesc/TOYMCTargetDesc.h"
+#include "MCTargetDesc/TOYFixupKinds.h"
 #include "llvm/MC/MCAssembler.h"
 #include "llvm/MC/MCELFObjectWriter.h"
 #include "llvm/MC/MCExpr.h"
@@ -67,7 +68,18 @@ unsigned TOYELFObjectWriter::GetRelocType(const MCValue &Target,
                                           bool IsPCRel,
                                           bool IsRelocWithSymbol,
                                           int64_t Addend) const {
-  llvm_unreachable("GetRelocType is not implemented yet");
+  // determine the type of the relocation
+  unsigned Type = (unsigned)ELF::R_TOY_NONE;
+  unsigned Kind = (unsigned)Fixup.getKind();
+
+  switch (Kind) {
+  default:
+    llvm_unreachable("invalid fixup kind!");
+  case TOY::fixup_TOY_CALL:
+    Type = ELF::R_TOY_CALL;
+    break;
+  }
+  return Type;
 }
 
 void TOYELFObjectWriter::sortRelocs(const MCAssembler &Asm,

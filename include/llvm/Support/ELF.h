@@ -816,6 +816,11 @@ enum {
   R_HEX_TPREL_11_X        =  85
 };
 
+enum {
+  R_TOY_NONE              =  0,
+  R_TOY_CALL              =  1
+};
+
 // Section header.
 struct Elf32_Shdr {
   Elf32_Word sh_name;      // Section name (index into string table)

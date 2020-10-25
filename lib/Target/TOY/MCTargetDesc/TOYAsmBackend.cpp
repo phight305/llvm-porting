@@ -13,6 +13,7 @@
 //
 
 #include "MCTargetDesc/TOYMCTargetDesc.h"
+#include "MCTargetDesc/TOYFixupKinds.h"
 #include "llvm/MC/MCAsmBackend.h"
 #include "llvm/MC/MCAssembler.h"
 #include "llvm/MC/MCDirectives.h"
@@ -55,11 +56,24 @@ public:
   }
 
   unsigned getNumFixupKinds() const {
-    llvm_unreachable("getNumFixupKinds is not implemented yet");
+    return TOY::NumTargetFixupKinds;
   }
 
   const MCFixupKindInfo &getFixupKindInfo(MCFixupKind Kind) const {
-    llvm_unreachable("getFixupKindInfo is not implemented yet");
+    const static MCFixupKindInfo Infos[TOY::NumTargetFixupKinds] = {
+    // This table *must* be in same the order of fixup_* kinds in
+    // TOYFixupKinds.h.
+    //
+    // name             offset bits flags
+    { "fixup_TOY_CALL", 0,     16,  0 },
+  };
+
+  if (Kind < FirstTargetFixupKind)
+    return MCAsmBackend::getFixupKindInfo(Kind);
+
+  assert(unsigned(Kind - FirstTargetFixupKind) < getNumFixupKinds() &&
+         "Invalid kind!");
+  return Infos[Kind - FirstTargetFixupKind];
   }
 
   /// @name Target Relaxation Interfaces
