@@ -147,7 +147,7 @@ getMachineOpValue(const MCInst &MI, const MCOperand &MO,
 
     switch (cast<MCSymbolRefExpr>(Expr)->getKind()) {
     default: llvm_unreachable("Unknown fixup kind!");
-    case MCSymbolRefExpr::VK_TOY_CALL :
+    case MCSymbolRefExpr::VK_TOY_CALL:
       FixupKind = TOY::fixup_TOY_CALL;
       break;
     }

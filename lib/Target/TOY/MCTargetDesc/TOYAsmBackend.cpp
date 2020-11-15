@@ -52,7 +52,14 @@ public:
   /// fixup kind as appropriate.
   void applyFixup(const MCFixup &Fixup, char *Data, unsigned DataSize,
                   uint64_t Value) const {
-    llvm_unreachable("applyFixup is not implemented yet");
+    unsigned Offset = Fixup.getOffset();
+    MCFixupKind Kind = Fixup.getKind();
+    unsigned NumBytes = (getFixupKindInfo(Kind).TargetSize + 7) / 8;
+
+    // Write out the fixed up bytes back to the code/data bits.
+    for (unsigned i = 0; i != NumBytes; ++i) {
+      Data[Offset + i] = (uint8_t)((Value >> (i*8)) & 0xff);
+    }
   }
 
   unsigned getNumFixupKinds() const {
@@ -61,19 +68,35 @@ public:
 
   const MCFixupKindInfo &getFixupKindInfo(MCFixupKind Kind) const {
     const static MCFixupKindInfo Infos[TOY::NumTargetFixupKinds] = {
-    // This table *must* be in same the order of fixup_* kinds in
-    // TOYFixupKinds.h.
-    //
-    // name             offset bits flags
-    { "fixup_TOY_CALL", 0,     16,  0 },
-  };
+      // This table *must* be in same the order of fixup_* kinds in
+      // TOYFixupKinds.h.
+      //
+      // name             offset bits flags
+      { "fixup_TOY_CALL", 0,     16,  MCFixupKindInfo::FKF_IsPCRel },
+    };
 
-  if (Kind < FirstTargetFixupKind)
-    return MCAsmBackend::getFixupKindInfo(Kind);
+    if (Kind < FirstTargetFixupKind)
+      return MCAsmBackend::getFixupKindInfo(Kind);
 
-  assert(unsigned(Kind - FirstTargetFixupKind) < getNumFixupKinds() &&
-         "Invalid kind!");
-  return Infos[Kind - FirstTargetFixupKind];
+    assert(unsigned(Kind - FirstTargetFixupKind) < getNumFixupKinds() &&
+           "Invalid kind!");
+    return Infos[Kind - FirstTargetFixupKind];
+  }
+
+  void processFixupValue(const MCAssembler &Asm,
+                         const MCAsmLayout &Layout,
+			 const MCFixup &Fixup,
+			 const MCFragment *DF,
+			 MCValue &Target, uint64_t &Value,
+			 bool &IsResolved) {
+    switch (Fixup.getKind()) {
+    case TOY::fixup_TOY_CALL: {
+        if (Value != 0) { // The symbol is defined in the same section
+          IsResolved = true;
+        }
+    }
+    break;
+    }
   }
 
   /// @name Target Relaxation Interfaces

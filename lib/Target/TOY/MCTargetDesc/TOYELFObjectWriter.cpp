@@ -37,8 +37,6 @@ namespace {
                                            const MCFragment &F,
                                            const MCFixup &Fixup,
                                            bool IsPCRel) const;
-    virtual void sortRelocs(const MCAssembler &Asm,
-                            std::vector<ELFRelocationEntry> &Relocs);
   };
 }
 
@@ -80,11 +78,6 @@ unsigned TOYELFObjectWriter::GetRelocType(const MCValue &Target,
     break;
   }
   return Type;
-}
-
-void TOYELFObjectWriter::sortRelocs(const MCAssembler &Asm,
-                                    std::vector<ELFRelocationEntry> &Relocs) {
-  llvm_unreachable("sortRelocs is not implemented yet");
 }
 
 MCObjectWriter *llvm::createTOYELFObjectWriter(raw_ostream &OS,
