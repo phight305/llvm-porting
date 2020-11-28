@@ -124,7 +124,14 @@ def LOADrr :
 def MOVi :
   InstTOY<(outs GRRegs:$dst), (ins i32imm:$src),
           "mov $dst, $src",
-          []>;
+          []> {
+  bits<4> dst;
+  bits<16> src;
+  let Inst{31-29} = 0;
+  let Inst{28-24} = 0b01001; // Opcode
+  let Inst{23-20} = dst;
+  let Inst{15-0} = src;
+}
 
 def : Pat<(i32 immSExt16:$in),
           (MOVi imm:$in)>;
