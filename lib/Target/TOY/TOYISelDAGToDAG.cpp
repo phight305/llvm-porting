@@ -88,7 +88,7 @@ bool TOYDAGToDAGISel::SelectADDRrr(SDValue Addr, SDValue &R1, SDValue &R2) {
   }
 
   R1 = Addr;
-  R2 = CurDAG->getTargetConstant(0, MVT::i32);
+  R2 = CurDAG->getRegister(TOY::ZERO, MVT::i32);
   return true;
 }
 
