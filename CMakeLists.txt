@@ -412,6 +412,9 @@ add_subdirectory(utils/yaml2obj)
 
 add_subdirectory(projects)
 
+# Test TOY Backend
+add_subdirectory(toytests)
+
 if( LLVM_INCLUDE_TOOLS )
   add_subdirectory(tools)
 endif()
