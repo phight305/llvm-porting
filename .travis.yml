@@ -3,10 +3,23 @@ language: cpp
 compiler:
   - gcc
 
+env:
+  - TOY_EMULATOR_PATH=$TRAVIS_BUILD_DIR/../TOY_Emulator/build/emulator
+
 before_script:
+  - cd ..
+  - git clone https://github.com/llvmphighter/TOY_Emulator.git
+  - cd TOY_Emulator
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make -j16
+  - cd $TRAVIS_BUILD_DIR
   - mkdir build
   - cd build
   - cmake –DCMAKE_BUILD_TYPE=Debug ..
+  - make -j16
 
 script:
-  - make -j16
+  - cd bin/toytests
+  - bash regression.sh 
