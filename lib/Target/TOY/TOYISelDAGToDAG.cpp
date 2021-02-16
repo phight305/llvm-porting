@@ -96,6 +96,13 @@ const char *TOYTargetLowering::getTargetNodeName(unsigned Opcode) const {
   switch (Opcode) {
   default: return 0;
   case TOYISD::CALL:     return "TOYISD::CALL";
+  case TOYISD::BR_CC:    return "TOYISD::BR_CC";
+  case TOYISD::CMPEQ:    return "TOYISD::CMPEQ";
+  case TOYISD::CMPNE:    return "TOYISD::CMPNE";
+  case TOYISD::CMPLT:    return "TOYISD::CMPLT";
+  case TOYISD::CMPLE:    return "TOYISD::CMPLE";
+  case TOYISD::CMPGT:    return "TOYISD::CMPGT";
+  case TOYISD::CMPGE:    return "TOYISD::CMPGE";
   case TOYISD::RET_FLAG: return "TOYIDS::RET_FLAG";
   }
 }

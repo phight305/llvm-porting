@@ -23,8 +23,15 @@ namespace llvm {
   namespace TOYISD {
     enum {
       FIRST_NUMBER = ISD::BUILTIN_OP_END,
-      CALL,      // A call instruction.
-      RET_FLAG   // A return instruction.
+      CALL,
+      BR_CC,
+      CMPEQ,
+      CMPNE,
+      CMPLT,
+      CMPLE,
+      CMPGT,
+      CMPGE,
+      RET_FLAG
     };
   }
 
@@ -51,8 +58,9 @@ namespace llvm {
                   const SmallVectorImpl<ISD::OutputArg> &Outs,
                   const SmallVectorImpl<SDValue> &OutVals,
                   DebugLoc dl, SelectionDAG &DAG) const;
-
     virtual const char *getTargetNodeName(unsigned Opcode) const;
+
+    SDValue LowerBR_CC(SDValue Op, SelectionDAG &DAG) const;
   };
 } // end namespace llvm
 

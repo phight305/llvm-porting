@@ -238,10 +238,46 @@ TOYTargetLowering::TOYTargetLowering(TargetMachine &TM)
   // Set up the register classes.
   addRegisterClass(MVT::i32, &TOY::GRRegsRegClass);
   computeRegisterProperties();
+
+  setOperationAction(ISD::BR_CC, MVT::i32, Custom);
 }
 
+static SDValue EmitCMP(SDValue &LHS, SDValue &RHS, ISD::CondCode CC,
+                       DebugLoc dl, SelectionDAG &DAG) {
+  switch (CC) {
+  default: llvm_unreachable("Invalid integer condition!");
+  case ISD::SETEQ:
+    return DAG.getNode(TOYISD::CMPEQ, dl, MVT::Glue, LHS, RHS);
+  case ISD::SETNE:
+    return DAG.getNode(TOYISD::CMPNE, dl, MVT::Glue, LHS, RHS);
+  case ISD::SETLT:
+    return DAG.getNode(TOYISD::CMPLT, dl, MVT::Glue, LHS, RHS);
+  case ISD::SETLE:
+    return DAG.getNode(TOYISD::CMPLE, dl, MVT::Glue, LHS, RHS);
+  case ISD::SETGT:
+    return DAG.getNode(TOYISD::CMPGT, dl, MVT::Glue, LHS, RHS);
+  case ISD::SETGE:
+    return DAG.getNode(TOYISD::CMPGE, dl, MVT::Glue, LHS, RHS);
+  }
+}
+
+SDValue TOYTargetLowering::LowerBR_CC(SDValue Op, SelectionDAG &DAG) const {
+  SDValue Chain = Op.getOperand(0);
+  ISD::CondCode CC = cast<CondCodeSDNode>(Op.getOperand(1))->get();
+  SDValue LHS   = Op.getOperand(2);
+  SDValue RHS   = Op.getOperand(3);
+  SDValue Dest  = Op.getOperand(4);
+  DebugLoc dl   = Op.getDebugLoc();
+
+  SDValue Flag = EmitCMP(LHS, RHS, CC, dl, DAG);
+
+  return DAG.getNode(TOYISD::BR_CC, dl, Op.getValueType(),
+                     Chain, Dest, Flag);
+}
 
 SDValue TOYTargetLowering::
 LowerOperation(SDValue Op, SelectionDAG &DAG) const {
-  llvm_unreachable("LowerOperation has not benn implemented yet");
+  switch (Op.getOpcode()) {
+  case ISD::BR_CC: return LowerBR_CC(Op, DAG);
+  }
 }

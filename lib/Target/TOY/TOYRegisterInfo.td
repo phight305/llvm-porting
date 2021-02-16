@@ -10,3 +10,6 @@ def SP : TOYReg<13, "sp">;
 def LR : TOYReg<14, "lr">;
 def TMP : TOYReg<15, "tmp">;
 def GRRegs : RegisterClass<"TOY", [i32], 32, (add R0, R1, R2, R3, ZERO, SP, LR, TMP)>;
+
+def PRED : TOYReg<11, "pred">;
+def PredRegs : RegisterClass<"TOY", [i1], 32, (add PRED)>;

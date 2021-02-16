@@ -135,3 +135,71 @@ def MOVi :
 
 def : Pat<(i32 immSExt16:$in),
           (MOVi imm:$in)>;
+
+// Unconditional branch
+
+def jmptarget : Operand<OtherVT>;
+let isBranch = 1, isTerminator = 1, isBarrier = 1 in {
+  def BR :
+    InstTOY<(outs), (ins jmptarget:$addr),
+            "br $addr", [(br bb:$addr)]> {
+    bits<16> addr;
+    let Inst{31-29} = 0;
+    let Inst{28-24} = 0b01010; // Opcode
+    let Inst{23-16} = 0;
+    let Inst{15-0} = addr;
+  }
+}
+
+// Conditional branch
+
+def SDT_TOYBrCC : SDTypeProfile<0, 1, [SDTCisVT<0, OtherVT>]>;
+def TOYbrcc : SDNode<"TOYISD::BR_CC", SDT_TOYBrCC,
+                      [SDNPHasChain, SDNPInGlue]>;
+
+def brtarget : Operand<OtherVT>;
+let Uses = [PRED], isBranch = 1, isBarrier = 1 in {
+  def BRCC:
+    InstTOY<(outs), (ins brtarget:$dst),
+            "TOYbrcc $dst",
+            [(TOYbrcc (bb:$dst))]> {
+    bits<16> dst;
+    let Inst{31-29} = 0;
+    let Inst{28-24} = 0b01011; // Opcode
+    let Inst{23-19} = 0;
+    let Inst{19-16} = 0;
+    let Inst{15-0}  = dst;
+  }
+}
+
+// Cmp instructions
+
+def SDT_TOYCmp : SDTypeProfile<0, 2, [SDTCisSameAs<0, 1>]>;
+def TOYCmpEq : SDNode<"TOYISD::CMPEQ", SDT_TOYCmp, [SDNPOutGlue]>;
+def TOYCmpNe : SDNode<"TOYISD::CMPNE", SDT_TOYCmp, [SDNPOutGlue]>;
+def TOYCmpLt : SDNode<"TOYISD::CMPLT", SDT_TOYCmp, [SDNPOutGlue]>;
+def TOYCmpLe : SDNode<"TOYISD::CMPLE", SDT_TOYCmp, [SDNPOutGlue]>;
+def TOYCmpGt : SDNode<"TOYISD::CMPGT", SDT_TOYCmp, [SDNPOutGlue]>;
+def TOYCmpGe : SDNode<"TOYISD::CMPGE", SDT_TOYCmp, [SDNPOutGlue]>;
+
+class CMP<bits<5> opcode, string asm, SDNode opnode> :
+  InstTOY<(outs), (ins GRRegs:$src1, GRRegs:$src2),
+          !strconcat(asm, " $src1, $src2"),
+          [(opnode (i32 GRRegs:$src1), (i32 GRRegs:$src2))]> {
+  bits<4> src1;
+  bits<4> src2;
+  let Inst{31-29} = 0;
+  let Inst{28-24} = opcode;
+  let Inst{23-19} = 0;
+  let Inst{7-4} = src2;
+  let Inst{3-0} = src1;
+}
+
+let Defs = [PRED] in {
+  def CMPEQ : CMP<0b01100, "TOYCmpEq", TOYCmpEq>;
+  def CMPNE : CMP<0b01101, "TOYCmpNe", TOYCmpNe>;
+  def CMPLT : CMP<0b01110, "TOYCmpLt", TOYCmpLt>;
+  def CMPLE : CMP<0b01111, "TOYCmpLe", TOYCmpLe>;
+  def CMPGT : CMP<0b10000, "TOYCmpGe", TOYCmpGe>;
+  def CMPGE : CMP<0b10001, "TOYCmpGe", TOYCmpGe>;
+}
