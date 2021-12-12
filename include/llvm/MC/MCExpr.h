@@ -203,7 +203,8 @@ public:
     VK_Mips_CALL_HI16,
     VK_Mips_CALL_LO16,
 
-    VK_TOY_CALL
+    VK_TOY_CALL,
+    VK_TOY_BR
   };
 
 private:

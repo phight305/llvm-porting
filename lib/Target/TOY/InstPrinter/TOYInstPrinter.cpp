@@ -43,6 +43,7 @@ static void printExpr(const MCExpr *Expr, raw_ostream &OS) {
   default: llvm_unreachable("Invalid kind!");
   case MCSymbolRefExpr::VK_None: break;
   case MCSymbolRefExpr::VK_TOY_CALL: OS << "%toy_call("; break;
+  case MCSymbolRefExpr::VK_TOY_BR: OS << "("; break;
   }
 
   OS << SRE->getSymbol();

@@ -90,8 +90,6 @@ namespace {
 
     bool printGetPCX(const MachineInstr *MI, unsigned OpNo, raw_ostream &OS);
     
-    virtual bool isBlockOnlyReachableByFallthrough(const MachineBasicBlock *MBB) const;
-
     virtual MachineLocation getDebugValueLocation(const MachineInstr *MI) const;
   };
 } // end of anonymous namespace
@@ -132,16 +130,6 @@ bool TOYAsmPrinter::PrintAsmMemoryOperand(const MachineInstr *MI,
                                           const char *ExtraCode,
                                           raw_ostream &O) {
   llvm_unreachable("PrintAsmMemoryOperand not implemented yet!\n");
-}
-
-/// isBlockOnlyReachableByFallthough - Return true if the basic block has
-/// exactly one predecessor and the control transfer mechanism between
-/// the predecessor and this block is a fall-through.
-///
-/// This overrides AsmPrinter's implementation to handle delay slots.
-bool TOYAsmPrinter::
-isBlockOnlyReachableByFallthrough(const MachineBasicBlock *MBB) const {
-  llvm_unreachable("isBlockOnlyReachableByFallthrough not implemented yet!\n");
 }
 
 MachineLocation TOYAsmPrinter::

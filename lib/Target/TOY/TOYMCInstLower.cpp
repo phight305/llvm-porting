@@ -14,6 +14,8 @@
 #include "TOYMCInstLower.h"
 // #include "TOYAsmPrinter.h"
 // #include "TOYInstrInfo.h"
+#define GET_INSTRINFO_ENUM
+#include "TOYGenInstrInfo.inc"
 // #include "MCTargetDesc/MipsBaseInfo.h"
 #include "llvm/CodeGen/AsmPrinter.h"
 #include "llvm/CodeGen/MachineFunction.h"
@@ -38,15 +40,19 @@ MCOperand TOYMCInstLower::LowerSymbolOperand(const MachineOperand &MO,
     Symbol = Printer.Mang->getSymbol(MO.getGlobal());
     Offset += MO.getOffset();
     break;
+  case MachineOperand::MO_MachineBasicBlock:
+    Symbol = MO.getMBB()->getSymbol();
+    break;
   default: llvm_unreachable("This MOTy is not supported");
   }
 
-  // FIXME: For now, we only handle the symbol of call instruction, so it always
-  //        return VMCSymbolRefExp::rK_TOY_CALL.
   MCSymbolRefExpr::VariantKind Kind;
-  switch (MO.getTargetFlags()) {
-  case 0: Kind = MCSymbolRefExpr::VK_TOY_CALL; break;
-  default: llvm_unreachable("This target flag is not supported");
+  unsigned int Opcode = MO.getParent()->getOpcode();
+  switch (Opcode) {
+  case TOY::CALL: Kind = MCSymbolRefExpr::VK_TOY_CALL; break;
+  case TOY::BR:
+  case TOY::BRCC: Kind = MCSymbolRefExpr::VK_TOY_BR; break;
+  default: llvm_unreachable("Unknown machine op code!!!");
   }
 
   const MCExpr *Expr = MCSymbolRefExpr::Create(Symbol, Kind, Ctx);
@@ -66,6 +72,7 @@ MCOperand TOYMCInstLower::LowerOperand(const MachineOperand &MO,
   case MachineOperand::MO_Immediate:
     return MCOperand::CreateImm(MO.getImm() + offset);
   case MachineOperand::MO_GlobalAddress:
+  case MachineOperand::MO_MachineBasicBlock:
     return LowerSymbolOperand(MO, MOTy, offset);
   }
 

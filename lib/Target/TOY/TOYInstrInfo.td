@@ -161,7 +161,7 @@ def brtarget : Operand<OtherVT>;
 let Uses = [PRED], isBranch = 1, isBarrier = 1, hasSideEffects = 1 in {
   def BRCC:
     InstTOY<(outs), (ins brtarget:$dst),
-            "TOYbrcc $dst",
+            "brcc $dst",
             [(TOYbrcc (bb:$dst))]> {
     bits<16> dst;
     let Inst{31-29} = 0;
@@ -196,10 +196,10 @@ class CMP<bits<5> opcode, string asm, SDNode opnode> :
 }
 
 let Defs = [PRED] in {
-  def CMPEQ : CMP<0b01100, "TOYCmpEq", TOYCmpEq>;
-  def CMPNE : CMP<0b01101, "TOYCmpNe", TOYCmpNe>;
-  def CMPLT : CMP<0b01110, "TOYCmpLt", TOYCmpLt>;
-  def CMPLE : CMP<0b01111, "TOYCmpLe", TOYCmpLe>;
-  def CMPGT : CMP<0b10000, "TOYCmpGe", TOYCmpGe>;
-  def CMPGE : CMP<0b10001, "TOYCmpGe", TOYCmpGe>;
+  def CMPEQ : CMP<0b01100, "cmp_eq", TOYCmpEq>;
+  def CMPNE : CMP<0b01101, "cmp_ne", TOYCmpNe>;
+  def CMPLT : CMP<0b01110, "cmp_lt", TOYCmpLt>;
+  def CMPLE : CMP<0b01111, "cmp_le", TOYCmpLe>;
+  def CMPGT : CMP<0b10000, "cmp_gt", TOYCmpGe>;
+  def CMPGE : CMP<0b10001, "cmp_ge", TOYCmpGe>;
 }
