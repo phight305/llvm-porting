@@ -85,7 +85,7 @@ bool TOYInstrInfo::AnalyzeBranch(MachineBasicBlock &MBB,
                                  MachineBasicBlock *&FBB,
                                  SmallVectorImpl<MachineOperand> &Cond,
                                  bool AllowModify) const {
-  return false;
+  return true;
 }
 
 unsigned
