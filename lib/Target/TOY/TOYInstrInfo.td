@@ -200,6 +200,6 @@ let Defs = [PRED] in {
   def CMPNE : CMP<0b01101, "cmp_ne", TOYCmpNe>;
   def CMPLT : CMP<0b01110, "cmp_lt", TOYCmpLt>;
   def CMPLE : CMP<0b01111, "cmp_le", TOYCmpLe>;
-  def CMPGT : CMP<0b10000, "cmp_gt", TOYCmpGe>;
+  def CMPGT : CMP<0b10000, "cmp_gt", TOYCmpGt>;
   def CMPGE : CMP<0b10001, "cmp_ge", TOYCmpGe>;
 }

@@ -126,14 +126,15 @@ getMachineOpValue(const MCInst &MI, const MCOperand &MO,
                   SmallVectorImpl<MCFixup> &Fixups) const {
   if (MO.isReg()) {
     switch (MO.getReg()) {
-    case TOY::R0:   return 0;
-    case TOY::R1:   return 1;
-    case TOY::R2:   return 2;
-    case TOY::R3:   return 3;
-    case TOY::ZERO: return 4;
-    case TOY::SP:   return 5;
-    case TOY::LR:   return 6;
-    case TOY::TMP:  return 7;
+    case TOY::R0:    return 0;
+    case TOY::R1:    return 1;
+    case TOY::R2:    return 2;
+    case TOY::R3:    return 3;
+    case TOY::ZERO:  return 4;
+    case TOY::SP:    return 5;
+    case TOY::LR:    return 6;
+    case TOY::TMP:   return 7;
+    case TOY::PRED:  return 8;
     default: llvm_unreachable("Unable to encode MachineOperand!");
     }
   }
@@ -149,6 +150,9 @@ getMachineOpValue(const MCInst &MI, const MCOperand &MO,
     default: llvm_unreachable("Unknown fixup kind!");
     case MCSymbolRefExpr::VK_TOY_CALL:
       FixupKind = TOY::fixup_TOY_CALL;
+      break;
+    case MCSymbolRefExpr::VK_TOY_BR:
+      FixupKind = TOY::fixup_TOY_BR;
       break;
     }
     Fixups.push_back(MCFixup::Create(0, MO.getExpr(), MCFixupKind(FixupKind)));

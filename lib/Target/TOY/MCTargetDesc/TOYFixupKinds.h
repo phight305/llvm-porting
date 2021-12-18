@@ -24,6 +24,7 @@ namespace TOY {
   //
   enum Fixups {
     fixup_TOY_CALL = FirstTargetFixupKind,
+    fixup_TOY_BR,
 
     // Marker
     LastTargetFixupKind,

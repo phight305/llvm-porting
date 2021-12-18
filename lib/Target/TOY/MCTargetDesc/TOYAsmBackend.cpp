@@ -73,6 +73,7 @@ public:
       //
       // name             offset bits flags
       { "fixup_TOY_CALL", 0,     16,  MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_TOY_BR",   0,     16,  MCFixupKindInfo::FKF_IsPCRel },
     };
 
     if (Kind < FirstTargetFixupKind)
@@ -90,7 +91,8 @@ public:
 			 MCValue &Target, uint64_t &Value,
 			 bool &IsResolved) {
     switch (Fixup.getKind()) {
-    case TOY::fixup_TOY_CALL: {
+    case TOY::fixup_TOY_CALL:
+    case TOY::fixup_TOY_BR: {
         if (Value != 0) { // The symbol is defined in the same section
           IsResolved = true;
         }
