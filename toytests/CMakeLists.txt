@@ -2,7 +2,8 @@ set(TOY_TEST_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/toytests)
 
 set(TESTS
     basic
-    cfg
+    if_else
+    loop
 )
 
 # Copy regression.sh

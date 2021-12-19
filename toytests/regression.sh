@@ -16,7 +16,7 @@ fi
 
 test_base_dir=`pwd`
 echo "${test_base_dir}"
-tests=("basic")
+tests=("basic" "if_else" "loop")
  
 for ((i=0; i < ${#tests[@]}; i++))
 do
