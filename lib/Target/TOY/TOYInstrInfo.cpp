@@ -85,6 +85,23 @@ bool TOYInstrInfo::AnalyzeBranch(MachineBasicBlock &MBB,
                                  MachineBasicBlock *&FBB,
                                  SmallVectorImpl<MachineOperand> &Cond,
                                  bool AllowModify) const {
+  // If the block has no terminators, it just falls into the block after it.
+  MachineBasicBlock::iterator I = MBB.end();
+  if (I == MBB.begin() || !isUnpredicatedTerminator(--I))
+    return false;
+
+  // Get the last instruction in the block.
+  MachineInstr *LastInst = I;
+
+  // If there is only one terminator instruction, process it.
+  if (I == MBB.begin() || !isUnpredicatedTerminator(--I)) {
+    if (LastInst->getOpcode() == TOY::BR) {
+      TBB = LastInst->getOperand(0).getMBB();
+      return false;
+    }
+    return true;
+  }
+
   return true;
 }
 
@@ -93,11 +110,46 @@ TOYInstrInfo::InsertBranch(MachineBasicBlock &MBB,MachineBasicBlock *TBB,
                            MachineBasicBlock *FBB,
                            const SmallVectorImpl<MachineOperand> &Cond,
                            DebugLoc DL) const {
-  llvm_unreachable("InsertBranch not implemented\n");
+  // Shouldn't be a fall through.
+  assert(TBB && "InsertBranch must not be told to insert a fallthrough");
+  assert((Cond.size() == 1 || Cond.size() == 0) &&
+         "TOY branch conditions have two components!");
+
+  // One-way branch.
+  if (FBB == 0) {
+    if (Cond.empty())   // Unconditional branch
+      BuildMI(&MBB, DL, get(TOY::BR)).addMBB(TBB);
+    else                // Conditional branch
+      BuildMI(&MBB, DL, get(TOY::BRCC)).addMBB(TBB);
+    return 1;
+  }
+
+  // Two-way Conditional Branch.
+  BuildMI(&MBB, DL, get(TOY::BRCC)).addMBB(TBB);
+  BuildMI(&MBB, DL, get(TOY::BR)).addMBB(FBB);
+  return 2;
 }
 
 unsigned TOYInstrInfo::RemoveBranch(MachineBasicBlock &MBB) const {
-  llvm_unreachable("RemoveBranch not implemented\n");
+  MachineBasicBlock::iterator I = MBB.end();
+  if (I == MBB.begin()) return 0;
+  --I;
+  if (I->getOpcode() != TOY::BR && I->getOpcode() != TOY::BRCC)
+    return 0;
+
+  // Remove the branch.
+  I->eraseFromParent();
+
+  I = MBB.end();
+
+  if (I == MBB.begin()) return 1;
+  --I;
+  if (I->getOpcode() != TOY::BRCC)
+    return 1;
+
+  // Remove the branch.
+  I->eraseFromParent();
+  return 2;
 }
 
 void TOYInstrInfo::copyPhysReg(MachineBasicBlock &MBB,

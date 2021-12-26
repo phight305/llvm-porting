@@ -158,7 +158,7 @@ def TOYbrcc : SDNode<"TOYISD::BR_CC", SDT_TOYBrCC,
                       [SDNPHasChain, SDNPInGlue]>;
 
 def brtarget : Operand<OtherVT>;
-let Uses = [PRED], isBranch = 1, isBarrier = 1, hasSideEffects = 1 in {
+let Uses = [PRED], isBranch = 1, isTerminator = 1, isBarrier = 1, hasSideEffects = 1 in {
   def BRCC:
     InstTOY<(outs), (ins brtarget:$dst),
             "brcc $dst",
