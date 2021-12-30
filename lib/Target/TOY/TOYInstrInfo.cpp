@@ -98,8 +98,29 @@ bool TOYInstrInfo::AnalyzeBranch(MachineBasicBlock &MBB,
     if (LastInst->getOpcode() == TOY::BR) {
       TBB = LastInst->getOperand(0).getMBB();
       return false;
+    } else if (LastInst->getOpcode() == TOY::BRCC) {
+      TBB = LastInst->getOperand(0).getMBB();
+      Cond.push_back(MachineOperand::CreateReg(TOY::PRED, false));
+      return false;
     }
     return true;
+  }
+
+  // Get the instruction before it if it's a terminator.
+  MachineInstr *SecondLastInst = I;
+
+  // If there are three terminators, we don't know what sort of block this is.
+  if (SecondLastInst && I != MBB.begin() &&
+      isUnpredicatedTerminator(--I))
+    return true;
+
+  // If the block ends with NVPTX::GOTO and NVPTX:CBranch, handle it.
+  if (SecondLastInst->getOpcode() == TOY::BRCC &&
+      LastInst->getOpcode() == TOY::BR) {
+    TBB = SecondLastInst->getOperand(0).getMBB();
+    Cond.push_back(MachineOperand::CreateReg(TOY::PRED, false));
+    FBB = LastInst->getOperand(0).getMBB();
+    return false;
   }
 
   return true;
