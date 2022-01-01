@@ -7,5 +7,6 @@ class TargetMachine;
 class TOYTargetMachine;
 
 FunctionPass *createTOYISelDag(TOYTargetMachine &TM);
+FunctionPass *createTOYPreRegAlloc();
 } // end namespace llvm;
 #endif

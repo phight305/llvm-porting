@@ -44,6 +44,7 @@ public:
   }
 
   virtual bool addInstSelector();
+  virtual bool addPreRegAlloc();
   virtual bool addPreEmitPass();
 };
 } // namespace
@@ -56,6 +57,11 @@ TargetPassConfig *TOYTargetMachine::createPassConfig(PassManagerBase &PM) {
 bool TOYPassConfig::addInstSelector() {
     addPass(createTOYISelDag(getTOYTargetMachine()));
     return false;
+}
+
+bool TOYPassConfig::addPreRegAlloc() {
+    addPass(createTOYPreRegAlloc());
+    return true;
 }
 
 /// addPreEmitPass - This pass may be implemented by targets that want to run
