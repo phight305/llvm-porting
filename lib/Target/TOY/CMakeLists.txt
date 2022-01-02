@@ -24,6 +24,7 @@ add_llvm_target(TOYCodeGen
 #  TOYSelectionDAGInfo.cpp
    TOYMCInstLower.cpp
    TOYPreRegAlloc.cpp
+   TOYPreEmit.cpp
 )
 
 #add_dependencies(LLVMTOYCodeGen intrinsics_gen)

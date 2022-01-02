@@ -68,5 +68,6 @@ bool TOYPassConfig::addPreRegAlloc() {
 /// passes immediately before machine code is emitted.  This should return
 /// true if -print-machineinstrs should print out the code after the passes.
 bool TOYPassConfig::addPreEmitPass(){
+    addPass(createTOYPreEmit());
     return true;
 }
