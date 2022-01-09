@@ -5,6 +5,7 @@ set(TESTS
     if_else
     loop
     loop_loop
+    decrement_loop
 )
 
 # Copy regression.sh
