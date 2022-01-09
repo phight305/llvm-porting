@@ -31,7 +31,8 @@ namespace {
     TOYPreEmit() : MachineFunctionPass(ID) {}
 
     virtual bool runOnMachineFunction(MachineFunction &MF);
-    bool optimizeNestedLoop(MachineFunction &MF);
+    bool optimizeLoopBranch(MachineFunction &MF);
+    bool removeFallThroughBranch(MachineFunction &MF);
 
     const char *getPassName() const { return "TOY PreRmit"; }
 
@@ -54,11 +55,12 @@ FunctionPass *llvm::createTOYPreEmit() {
 static std::pair<bool, unsigned> getReversedCmp(unsigned Op) {
   switch (Op) {
   case TOY::CMPGE: return std::pair<bool, unsigned>(true, TOY::CMPLT);
+  case TOY::CMPLE: return std::pair<bool, unsigned>(true, TOY::CMPGT);
   default:         return std::pair<bool, unsigned>(false, 0);
   }
 }
 
-bool TOYPreEmit::optimizeNestedLoop(MachineFunction &MF) {
+bool TOYPreEmit::optimizeLoopBranch(MachineFunction &MF) {
   bool Changed = false;
 
   std::map<MachineBasicBlock *, unsigned> BB2OrderMap;
@@ -95,9 +97,11 @@ bool TOYPreEmit::optimizeNestedLoop(MachineFunction &MF) {
     MachineBasicBlock *TBB = SecondLastInst->getOperand(0).getMBB();
     MachineBasicBlock *FBB = LastInst->getOperand(0).getMBB();
 
-    if (BB2OrderMap[MBB] > BB2OrderMap[TBB] &&
-        BB2OrderMap[MBB] > BB2OrderMap[FBB] &&
-        BB2OrderMap[FBB] > BB2OrderMap[TBB]) {
+    if ((BB2OrderMap[MBB] > BB2OrderMap[TBB] &&
+         BB2OrderMap[MBB] > BB2OrderMap[FBB] &&
+         BB2OrderMap[FBB] > BB2OrderMap[TBB]) ||
+        (BB2OrderMap[MBB] < BB2OrderMap[TBB] &&
+         BB2OrderMap[MBB] > BB2OrderMap[FBB])) {
       MachineInstr *ThirdLastInst = I;
       std::pair<bool, unsigned> Reverse = getReversedCmp(ThirdLastInst->getOpcode());
       if (Reverse.first) {
@@ -112,13 +116,52 @@ bool TOYPreEmit::optimizeNestedLoop(MachineFunction &MF) {
   return Changed;
 }
 
+bool TOYPreEmit::removeFallThroughBranch(MachineFunction &MF) {
+  bool Changed = false;
+
+  std::map<MachineBasicBlock *, unsigned> BB2OrderMap;
+  unsigned Order = 0;
+  for (MachineFunction::iterator MFI = MF.begin(), MFE = MF.end(); MFI != MFE; MFI++) {
+    MachineBasicBlock *BB = MFI;
+    BB2OrderMap[BB] = Order;
+    Order++;
+  }
+
+  for (MachineFunction::iterator MBI = MF.begin(); MBI != MF.end(); MBI++) {
+    MachineBasicBlock *MBB = MBI;
+
+    // If MBB has only one successor and MBB falls through to its sucessor,
+    // then the BR branching to its successor can be removed.
+    MachineBasicBlock::iterator I = MBI->end();
+    if (I == MBB->begin())
+        continue;
+
+    I--;
+    MachineInstr *LastInst = I;
+    if (LastInst->getOpcode() == TOY::BR) {
+        MachineBasicBlock *Target = LastInst->getOperand(0).getMBB();
+        if (BB2OrderMap[Target] == BB2OrderMap[MBB] + 1) {
+            LastInst->eraseFromParent();
+            Changed = true;
+        }
+    }
+  }
+
+  return Changed;
+}
+
 bool TOYPreEmit::runOnMachineFunction(MachineFunction &MF) {
   DEBUG(dbgs() << "********* TOY PreRmit *********\n");
 
   TII = MF.getTarget().getInstrInfo();
 
   bool Changed = false;
-  Changed |= optimizeNestedLoop(MF);
+  Changed |= optimizeLoopBranch(MF);
+  /*
+     After optmizing branch instructions in loop, a BB may has a BR instrution
+     branching to its fall through BB.
+  */
+  Changed |= removeFallThroughBranch(MF);
 
   return Changed;
 }
